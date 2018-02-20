@@ -5,23 +5,98 @@ Sources:
 '''
 
 import requests
+import re
+from tqdm import tqdm
+from time import sleep
 from bs4 import BeautifulSoup as bs
 
-########## First get R&M scripts for testing ###########
+def get_south_park():
+    # will replace @ with the season number while running
+    root_url = "https://www.springfieldspringfield.co.uk/"
+    base_url = root_url + "episode_scripts.php?tv-show=south-park"
 
-# will replace @ with the season number while running
-base_url = "http://rickandmorty.wikia.com/wiki/Category:Season_@_transcripts"
-
-for season in [1,2,3]:
-    if season != 1: continue
-    cur_url = base_url.replace('@', str(season))
-    page = requests.get(cur_url)
-    print("Pinged {} with status code {}".format(cur_url, page.status_code))
+    page = requests.get(base_url)
+    print("Pinged {} with status code {}".format(base_url, page.status_code))
 
     # create soup and look at html tags
     soup = bs(page.content, 'html.parser')
 
-    for text in soup.find_all('div'):
-        if "This article" in text.get_text()[:20]:
-            print(text.get_text())
+    # get all episode links
+    episodes = []
+    for link in soup.findAll('a', attrs={'href': re.compile("view_episode_scripts")}):
+        episodes.append(root_url + link.get('href'))
+        
 
+    # save text to file
+    with open("south_park.txt", 'a') as f:
+        for episode in tqdm(episodes):
+            episode_page = requests.get(episode)
+            episode_soup = bs(episode_page.content, 'html.parser')
+            for br in episode_soup.find_all("br"):
+                br.replace_with("\n")
+            text = episode_soup.findAll('div', attrs={'class': 'scrolling-script-container'})
+            for script in text:
+                if len(script) > 0:
+                    f.write(script.get_text().replace("r\r\n", "\n"))
+
+def get_simpsons():
+    # will replace @ with the season number while running
+    root_url = "https://www.springfieldspringfield.co.uk/"
+    base_url = root_url + "episode_scripts.php?tv-show=the-simpsons"
+
+    page = requests.get(base_url)
+    print("Pinged {} with status code {}".format(base_url, page.status_code))
+
+    # create soup and look at html tags
+    soup = bs(page.content, 'html.parser')
+
+    # get all episode links
+    episodes = []
+    for link in soup.findAll('a', attrs={'href': re.compile("view_episode_scripts")}):
+        episodes.append(root_url + link.get('href'))
+        
+
+    # save text to file
+    with open("simpsons.txt", 'a') as f:
+        for episode in tqdm(episodes):
+            episode_page = requests.get(episode)
+            episode_soup = bs(episode_page.content, 'html.parser')
+            for br in episode_soup.find_all("br"):
+                br.replace_with("\n")
+            text = episode_soup.findAll('div', attrs={'class': 'scrolling-script-container'})
+            for script in text:
+                if len(script) > 0:
+                    f.write(script.get_text().replace("r\r\n", "\n"))
+
+def get_rick_and_morty():
+    # will replace @ with the season number while running
+    root_url = "http://rickandmorty.wikia.com"
+    base_url = root_url + "/wiki/Category:Season_@_transcripts"
+
+    for season in [1,2,3]:
+        cur_url = base_url.replace('@', str(season))
+        page = requests.get(cur_url)
+        print("Pinged {} with status code {}".format(cur_url, page.status_code))
+
+        # create soup and look at html tags
+        soup = bs(page.content, 'html.parser')
+
+        # get all episode links
+        episodes = []
+        for link in soup.findAll('a', attrs={'href': re.compile("/Transcript")}):
+            episodes.append(root_url + link.get('href'))
+
+        # save text to file
+        with open("rick_and_morty.txt", 'a') as f:
+            for episode in episodes:
+                episode_page = requests.get(episode)
+                episode_soup = bs(episode_page.content, 'html.parser')
+                text = episode_soup.findAll('div', attrs={'class': 'poem'})
+                for script in text:
+                    if len(script) > 0:
+                        f.write(script.get_text())
+
+
+if __name__ == "__main__":
+    get_south_park()
+    print("complete")

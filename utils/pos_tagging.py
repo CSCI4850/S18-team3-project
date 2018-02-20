@@ -13,5 +13,5 @@ def pos_tagging(paragraph):
 
     for word in tok_sentences:
         tag_sentences.append(nltk.pos_tag(word))
-
+    # returns a tuple of (string: original_word, string: part_of_speech_code)
     return tag_sentences
