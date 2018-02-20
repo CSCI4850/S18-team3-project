@@ -28,7 +28,7 @@ To verify which environment you're in, use ```which pip```.  if you see that the
 
 ### Install packages
 
-Then is as easy as:  
+Then its as easy as:  
 ```pip install -r requirements.txt```
 
 
