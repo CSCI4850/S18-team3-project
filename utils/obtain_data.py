@@ -6,6 +6,7 @@ Sources:
 
 import requests
 import re
+import os
 from tqdm import tqdm
 from time import sleep
 from bs4 import BeautifulSoup as bs
@@ -28,7 +29,8 @@ def get_south_park():
         
 
     # save text to file
-    with open("south_park.txt", 'a') as f:
+    filepath = os.path.join("..", "data", "train", "south_park.txt")
+    with open(filepath, 'a') as f:
         for episode in tqdm(episodes):
             episode_page = requests.get(episode)
             episode_soup = bs(episode_page.content, 'html.parser')
@@ -57,7 +59,8 @@ def get_simpsons():
         
 
     # save text to file
-    with open("simpsons.txt", 'a') as f:
+    filepath = os.path.join("..", "data", "train", "simpsons.txt")
+    with open(filepath, 'a') as f:
         for episode in tqdm(episodes):
             episode_page = requests.get(episode)
             episode_soup = bs(episode_page.content, 'html.parser')
@@ -87,7 +90,8 @@ def get_rick_and_morty():
             episodes.append(root_url + link.get('href'))
 
         # save text to file
-        with open("rick_and_morty.txt", 'a') as f:
+        filepath = os.path.join("..", "data", "train", "rick_and_morty.txt")
+        with open(filepath, 'a') as f:
             for episode in episodes:
                 episode_page = requests.get(episode)
                 episode_soup = bs(episode_page.content, 'html.parser')
