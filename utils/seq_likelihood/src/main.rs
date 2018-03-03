@@ -6,23 +6,27 @@
  * the likelihood of that string occuring.
  *
  * TODO:
- * - convert transitions into number probabilities
- *  -Optimize space constraints
+ *  - Take input from stdin
+ *  - properly parse and format input in the same way that Madison's word2vec does
  *
  */
 
 use std::collections::HashMap;
 
 fn main() {
-    let input_string = vec!['A', 'B', 'B', 'C', 'B', 'A', 'D', 'D', 'A', 'B', 'A', 'D']
-        .iter()
-        .map(|c| c.to_string())
-        .collect();
+    let input_string = "A B B C B A D D A B A D";
+    let stringvec = vectorize_input_string(input_string);
+    println!("{:?}", stringvec);
 
-    let transitions = get_transition_likelihood(input_string);
+    let transitions = get_transition_likelihood(stringvec);
     println!("{:?}", transitions);
 }
 
+// Calculates the transition matrix lazily
+// Params:
+//      input_string: sequence to calculate transition matrix for
+// Returns:
+//      transitions: Likelihood of all possible following words in [0,1]
 fn get_transition_likelihood(input_string: Vec<String>) -> HashMap<String, HashMap<String, f32>> {
     let mut transitions = HashMap::new();
     let mut totals = HashMap::new();
@@ -45,4 +49,12 @@ fn get_transition_likelihood(input_string: Vec<String>) -> HashMap<String, HashM
 
     // return transition probabilities
     transitions
+}
+
+// Converts a string slice to a vector of Strings for use
+// Splits on spaces
+fn vectorize_input_string(s: &str) -> Vec<String> {
+    s.split(" ")
+        .map(|i| i.parse::<String>().expect("Error reading input."))
+        .collect()
 }
