@@ -29,15 +29,18 @@ fn main() {
 //      transitions: Likelihood of all possible following words in [0,1]
 fn get_transition_likelihood(input_string: Vec<&str>) -> HashMap<&str, HashMap<&str, f32>> {
     let mut transitions = HashMap::new();
-    let mut totals = HashMap::new();
-    let num_elements = input_string.len();
-    for i in 0..num_elements - 1 {
+    let mut totals: HashMap<&str, f32> = HashMap::new();
+
+    // use a sliding window of length 2
+    for iter in input_string.windows(2) {
+        let cur_word = iter[0];
+        let next_word = iter[1];
         *transitions
-            .entry(input_string[i])
+            .entry(cur_word)
             .or_insert(HashMap::new())
-            .entry(input_string[i + 1])
+            .entry(next_word)
             .or_insert(0_f32) += 1_f32;
-        *totals.entry(input_string[i]).or_insert(0_f32) += 1_f32;
+        *totals.entry(cur_word).or_insert(0_f32) += 1_f32;
     }
 
     // Convert next words into probabilities
@@ -51,10 +54,8 @@ fn get_transition_likelihood(input_string: Vec<&str>) -> HashMap<&str, HashMap<&
     transitions
 }
 
-// Converts a string slice to a vector of Strings for use
+// Converts a string slice to a vector of &str for use
 // Splits on spaces
 fn vectorize_input_string(s: &str) -> Vec<&str> {
     s.split(" ").collect()
-    //.map(|i| i.parse::<String>().expect("Error reading input."))
-    //.collect()
 }
