@@ -27,17 +27,17 @@ fn main() {
 //      input_string: sequence to calculate transition matrix for
 // Returns:
 //      transitions: Likelihood of all possible following words in [0,1]
-fn get_transition_likelihood(input_string: Vec<String>) -> HashMap<String, HashMap<String, f32>> {
+fn get_transition_likelihood(input_string: Vec<&str>) -> HashMap<&str, HashMap<&str, f32>> {
     let mut transitions = HashMap::new();
     let mut totals = HashMap::new();
     let num_elements = input_string.len();
     for i in 0..num_elements - 1 {
         *transitions
-            .entry(input_string[i].clone())
+            .entry(input_string[i])
             .or_insert(HashMap::new())
-            .entry(input_string[i + 1].clone())
+            .entry(input_string[i + 1])
             .or_insert(0_f32) += 1_f32;
-        *totals.entry(input_string[i].clone()).or_insert(0_f32) += 1_f32;
+        *totals.entry(input_string[i]).or_insert(0_f32) += 1_f32;
     }
 
     // Convert next words into probabilities
@@ -53,8 +53,8 @@ fn get_transition_likelihood(input_string: Vec<String>) -> HashMap<String, HashM
 
 // Converts a string slice to a vector of Strings for use
 // Splits on spaces
-fn vectorize_input_string(s: &str) -> Vec<String> {
-    s.split(" ")
-        .map(|i| i.parse::<String>().expect("Error reading input."))
-        .collect()
+fn vectorize_input_string(s: &str) -> Vec<&str> {
+    s.split(" ").collect()
+    //.map(|i| i.parse::<String>().expect("Error reading input."))
+    //.collect()
 }
