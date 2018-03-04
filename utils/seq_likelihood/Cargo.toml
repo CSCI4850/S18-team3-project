@@ -1,0 +1,6 @@
+[package]
+name = "seq_likelihood"
+version = "0.1.0"
+authors = ["sremedios <sam.remedios@gmail.com>"]
+
+[dependencies]
