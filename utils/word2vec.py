@@ -15,13 +15,21 @@ from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 from tensorflow.contrib.tensorboard.plugins import projector
 import nltk
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize
 
 #After tunning Sam's script to get all of the data from whatever URL, this retrieves it and creates a list full of words split just by spaces, 
 #This will be changed at some point to a function that unzips a zip folder containing multiple files of scripts (based on show) and will iterate through each file, maybe?
 def read_data(filename):
     with open(filename, 'r') as f:
-        data = [word for line in f for word in line.split()]
+        nontok_data = [word for line in f for word in line.lower().split()]
+        tokdata = [word_tokenize(i) for i in nontok_data]
+        data = []
+
+	#tokdata holds the tokenized data
+	#using nltk's word_tokenize() function returns list of word(s), so can't will become ['can', 't'] -- so the lines below simply run through tokdata, which is a list of lists, and appends all words into one big list, instead of having lists inside of lists
+        for wordList in tokdata:
+            data += wordList
+
     return data
 
 #Entire, non-unique vocabulary
@@ -31,10 +39,6 @@ vocabsize = len(vocab)    #corpus?????
 
 #Builds a dictionary that stores the UNIQUE words.
 #I think there's a feature in nltk that allows us to filter out words that only appear n times, so that will probably be added at some point, as we are getting pretty silly mis-typed words 
-
-
-
-
 
 def build_dataset(words, n_words):
     #Process raw inputs into a dataset.
@@ -55,8 +59,12 @@ def build_dataset(words, n_words):
     count[0][1] = unk_count
     reversed_dictionary = dict(zip(dictionary.values(), dictionary.keys()))
     return data, count, dictionary, reversed_dictionary
+    #revdictionary allows you to look up the word via it's number
+    #dictionary allows you to look up the number via it's word
 
-data, count, dictionary, revdictionary = build_dataset(vocab, vocabsize);
+
+data, count, dictionary, revdictionary = build_dataset(vocab, 50000);
+#CHANGE 2nd param back to vocabsize if you're having problems
 
 print(revdictionary)
 vocabsize = len(revdictionary)
@@ -76,9 +84,8 @@ print('Sample data', data[:10], [revdictionary[i] for i in data[:10]])
 
 data_index = 0
 
-
-
-# generate batch data   - The cat eats nine potatoes on the sidewalk
+# generate batch data for mini-batch gradient descent
+# here, the gradient is averaged over a small number of samples, as opposed to just one sample or ALL of the data
 def generate_batch(batch_size, num_skips, skip_window):
   global data_index
   assert batch_size % num_skips == 0
@@ -209,8 +216,8 @@ with tf.Session(graph=graph) as session:
                     close_word = revdictionary[nearest[k]]
                     log_str = "%s %s," % (log_str, close_word)
                 print(log_str)
-    final_embeddings = normalized_embeddings.eval()
-
+    final_embeddings = normalized_embeddings.eval() #Saves embeddings for use in other tensors
+#    np.savetxt('final_embedding_dic.txt', final_embeddings)
 
 #Prints out awesome data, the dots with similar words are closer together!
 
