@@ -18,16 +18,24 @@ fn main() {
     let stringvec = vectorize_input_string(input_string);
     println!("{:?}", stringvec);
 
-    let transitions = get_transition_likelihood(stringvec);
+    let transitions = get_transitions(stringvec);
     println!("{:?}", transitions);
+
+    let test_string = "A B C B";
+    let test_vec = vectorize_input_string(test_string);
+    println!("{:?}", calc_likelihood(test_vec, &transitions));
+
+    let test_string = "C B";
+    let test_vec = vectorize_input_string(test_string);
+    println!("{:?}", calc_likelihood(test_vec, &transitions));
 }
 
 // Calculates the transition matrix lazily
 // Params:
 //      input_string: sequence to calculate transition matrix for
 // Returns:
-//      transitions: Likelihood of all possible following words in [0,1]
-fn get_transition_likelihood(input_string: Vec<&str>) -> HashMap<&str, HashMap<&str, f32>> {
+//      transitions: Tranistion map of all possible following words in [0,1]
+fn get_transitions(input_string: Vec<&str>) -> HashMap<&str, HashMap<&str, f32>> {
     let mut transitions = HashMap::new();
     let mut totals: HashMap<&str, f32> = HashMap::new();
 
@@ -52,6 +60,22 @@ fn get_transition_likelihood(input_string: Vec<&str>) -> HashMap<&str, HashMap<&
 
     // return transition probabilities
     transitions
+}
+
+fn calc_likelihood<'a>(
+    input_string: Vec<&'a str>,
+    transitions: &HashMap<&'a str, HashMap<&'a str, f32>>,
+) -> f32 {
+    let mut likelihood: f32 = 1_f32;
+    for iter in input_string.windows(2) {
+        let cur_word = iter[0];
+        let next_word = iter[1];
+        if transitions.contains_key(&cur_word) && transitions.contains_key(&next_word) {
+            likelihood *= transitions[&cur_word][&next_word];
+        }
+    }
+
+    likelihood
 }
 
 // Converts a string slice to a vector of &str for use
