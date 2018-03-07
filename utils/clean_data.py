@@ -1,4 +1,5 @@
 import sys
+import os
 
 
 def main(argv):
@@ -9,11 +10,10 @@ def main(argv):
         print('you need to supply a filename as an argument.')
         exit()
 
+    buff = str()
+
     with open(filename) as data_in:
-
         line = data_in.readline()
-        line = line.rstrip()
-
         while len(line):
             # clear lines that are just '\n'
             while line == '\n':
@@ -51,39 +51,80 @@ def main(argv):
             while line.find('. ') != -1:
                 line = line.replace('. ', '.\n')
 
+            line = line.lower()
+
             # Correction to lines ending in Mr. Mrs. Ms. Dr.
-            if line[-3:] == 'Mr.':
+            if line[-4:] == 'mr.\n':
                 append = data_in.readline()
-                line += ' ' + append
                 line = line.rstrip()
-            elif line[-3:] == 'Ms.':
+                line += ' ' + append
+                line = line.replace('mr. ', 'Mr. ')
+            elif line[-5:] == 'mrs.\n':
                 append = data_in.readline()
-                line += ' ' + append
                 line = line.rstrip()
-            elif line[-3:] == 'Dr.':
+                line += ' ' + append
+                line = line.replace('mrs. ', 'Mrs. ')
+            elif line[-4:] == 'ms.\n':
                 append = data_in.readline()
-                line += ' ' + append
                 line = line.rstrip()
-            elif line[-4:] == 'Mrs.':
+                line += ' ' + append
+                line = line.replace('ms. ', 'Ms. ')
+            elif line[-4:] == 'dr.\n':
                 append = data_in.readline()
-                line += ' ' + append
                 line = line.rstrip()
+                line += ' ' + append
+                line = line.replace('dr. ', 'Dr. ')
             else:
                 pass
 
+            buff += line
 
-            print(line)
             line = data_in.readline()
-            line = line.rstrip('\n')
-    data_in.closed
+            while line == '\n':
+                line = data_in.readline()
 
-    #with open(argv[1]) as data_in:
-    #    ln = 1
-    #
-    #    line = data_in.readline()
-    #        while len(line):
-    #        if
-    #data_in.closed
+
+
+
+    with open('data_out.txt', 'w') as data_out:
+        buff = "<start> " + buff
+        buff = buff.replace('\n', ' <end>\n<start> ') # No punctuation
+        buff = buff.replace('.\n', '. <end>\n<start> ')
+        buff = buff.replace('?\n', '? <end>\n<start> ')
+        buff = buff.replace('!\n', '! <end>\n<start> ')
+        buff = buff.replace('?!\n', '?! <end>\n<start> ')
+        buff = buff.replace('!?\n', '!? <end>\n<start> ')
+
+        buff = buff[:-8]
+
+        data_out.write(buff)
+
+    with open('data_out.txt', 'r+') as verify:
+
+        line = verify.readline()
+        ln = 1
+
+        while len(line) != 0:
+            if line[-8:] != '. <end>\n' and\
+                line[-8:] != '! <end>\n' and\
+                line[-8:] != '? <end>\n' and\
+                line[-9:] != '?! <end>\n' and\
+                line[-9:] != '!? <end>\n':
+
+                    print("Warn: line", ln, "doesn't end with punctuation:", line)
+
+            line = verify.readline()
+
+
+
+            ln += 1
+
+
+
+
+
+
+
 
 
 
