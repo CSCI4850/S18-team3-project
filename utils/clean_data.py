@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 
 
 def main(argv):
@@ -53,37 +54,38 @@ def main(argv):
 
             line = line.lower()
 
+            line = line.replace('  ', ' ')
+
             # Correction to lines ending in Mr. Mrs. Ms. Dr.
-            if line[-4:] == 'mr.\n':
+            if line[-5:] == ' mr.\n':
                 append = data_in.readline()
                 line = line.rstrip()
                 line += ' ' + append
-                line = line.replace('mr. ', 'Mr. ')
-            elif line[-5:] == 'mrs.\n':
+                line = line.replace(' mr. ', ' Mr. ')
+            elif line[-6:] == ' mrs.\n':
                 append = data_in.readline()
                 line = line.rstrip()
                 line += ' ' + append
-                line = line.replace('mrs. ', 'Mrs. ')
-            elif line[-4:] == 'ms.\n':
+                line = line.replace(' mrs. ', ' Mrs. ')
+            elif line[-5:] == ' ms.\n':
                 append = data_in.readline()
                 line = line.rstrip()
                 line += ' ' + append
-                line = line.replace('ms. ', 'Ms. ')
-            elif line[-4:] == 'dr.\n':
+                line = line.replace(' ms. ', ' Ms. ')
+            elif line[-5:] == ' dr.\n':
                 append = data_in.readline()
                 line = line.rstrip()
                 line += ' ' + append
-                line = line.replace('dr. ', 'Dr. ')
+                line = line.replace(' dr. ', ' Dr. ')
             else:
                 pass
 
+            line = line.replace('. " ', '."' )
             buff += line
 
             line = data_in.readline()
             while line == '\n':
                 line = data_in.readline()
-
-
 
 
     with open('data_out.txt', 'w') as data_out:
@@ -97,6 +99,48 @@ def main(argv):
         buff = buff[:-8]
 
         data_out.write(buff)
+
+    with open('data_out.txt', 'r+') as data:
+        buff = data.read()
+        with open('male.txt', 'r') as names:
+            name = names.readline()
+            name = name.rstrip()
+            while len(name):
+                # note '?!' and '!?' are caught by '?' and '!'
+                buff = buff.replace(' ' + name.lower() + ' ', ' ' + name + ' ')
+                buff = buff.replace(' ' + name.lower() + ',', ' ' + name + ',')
+                buff = buff.replace(' ' + name.lower() + '.', ' ' + name + '.')
+                buff = buff.replace(' ' + name.lower() + ':', ' ' + name + ':')
+                buff = buff.replace(' ' + name.lower() + ';', ' ' + name + ';')
+                buff = buff.replace(' ' + name.lower() + '!', ' ' + name + '!')
+                buff = buff.replace(' ' + name.lower() + '?', ' ' + name + '?')
+                buff = buff.replace(' ' + name.lower() + '"', ' ' + name + '"')
+                buff = buff.replace('"' + name.lower() + ' ', '"' + name + ' ')
+                buff = buff.replace(' ' + name.lower() + "'s", ' ' + name + "'s")
+
+                name = names.readline()
+                name = name.rstrip()
+
+        with open('female.txt', 'r') as names:
+            name = names.readline()
+            name = name.rstrip()
+            while len(name):
+                # note '?!' and '!?' are caught by '?' and '!'
+                buff = buff.replace(' ' + name.lower() + ' ', ' ' + name + ' ')
+                buff = buff.replace(' ' + name.lower() + ',', ' ' + name + ',')
+                buff = buff.replace(' ' + name.lower() + '.', ' ' + name + '.')
+                buff = buff.replace(' ' + name.lower() + ':', ' ' + name + ':')
+                buff = buff.replace(' ' + name.lower() + ';', ' ' + name + ';')
+                buff = buff.replace(' ' + name.lower() + '!', ' ' + name + '!')
+                buff = buff.replace(' ' + name.lower() + '?', ' ' + name + '?')
+                buff = buff.replace(' ' + name.lower() + '"', ' ' + name + '"')
+                buff = buff.replace('"' + name.lower() + ' ', '"' + name + ' ')
+                buff = buff.replace(' ' + name.lower() + "'s", ' ' + name + "'s")
+
+                name = names.readline()
+                name = name.rstrip()
+
+        data.write(buff)
 
 
 main(sys.argv)
