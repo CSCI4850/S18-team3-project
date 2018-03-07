@@ -408,6 +408,7 @@ Carroll
 Carson
 Carsten
 Carter
+Cartman
 Cary
 Caryl
 Case
@@ -415,7 +416,6 @@ Casey
 Caspar
 Casper
 Cass
-Cat
 Cecil
 Cesar
 Chad
@@ -442,6 +442,7 @@ Chase
 Chaunce
 Chauncey
 Che
+Chef
 Chelton
 Chen
 Chester
@@ -867,7 +868,6 @@ Forrester
 Forster
 Foster
 Fowler
-Fox
 Fran
 Francesco
 Francis
