@@ -94,39 +94,9 @@ def main(argv):
         buff = buff.replace('!\n', '! <end>\n<start> ')
         buff = buff.replace('?!\n', '?! <end>\n<start> ')
         buff = buff.replace('!?\n', '!? <end>\n<start> ')
-
         buff = buff[:-8]
 
         data_out.write(buff)
-
-    with open('data_out.txt', 'r+') as verify:
-
-        line = verify.readline()
-        ln = 1
-
-        while len(line) != 0:
-            if line[-8:] != '. <end>\n' and\
-                line[-8:] != '! <end>\n' and\
-                line[-8:] != '? <end>\n' and\
-                line[-9:] != '?! <end>\n' and\
-                line[-9:] != '!? <end>\n':
-
-                    print("Warn: line", ln, "doesn't end with punctuation:", line)
-
-            line = verify.readline()
-
-
-
-            ln += 1
-
-
-
-
-
-
-
-
-
 
 
 main(sys.argv)
