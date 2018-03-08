@@ -102,7 +102,7 @@ def main(argv):
 
     with open('data_out.txt', 'r+') as data:
         buff = data.read()
-        with open('male.txt', 'r') as names:
+        with open('../data/male.txt', 'r') as names:
             name = names.readline()
             name = name.rstrip()
             while len(name):
@@ -121,7 +121,7 @@ def main(argv):
                 name = names.readline()
                 name = name.rstrip()
 
-        with open('female.txt', 'r') as names:
+        with open('../data/female.txt', 'r') as names:
             name = names.readline()
             name = name.rstrip()
             while len(name):

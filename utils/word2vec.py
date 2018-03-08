@@ -21,7 +21,7 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 #This will be changed at some point to a function that unzips a zip folder containing multiple files of scripts (based on show) and will iterate through each file, maybe?
 def read_data(filename):
     with open(filename, 'r') as f:
-        nontok_data = [word for line in f for word in line.lower().split()]
+        nontok_data = [word for line in f for word in line.split()]
         tokdata = [word_tokenize(i) for i in nontok_data]
         data = []
 
