@@ -11,10 +11,9 @@
  *
  */
 
-use std::io::prelude::*;
 use std::env;
 use std::fs::File;
-use std::io::{self, Read};
+use std::io::Read;
 use std::collections::HashMap;
 
 fn main() {
@@ -24,17 +23,17 @@ fn main() {
 
     let mut src_file = File::open(src_filename).expect("File not found");
     let mut src_buffer = String::new();
-    let vec_src_str = match src_file.read_to_string(&mut src_buffer) {
-        Ok(_v) => vectorize_input_string(&src_buffer[..]),
-        Err(_e) => vec!["ERROR"],
-    };
+    src_file
+        .read_to_string(&mut src_buffer)
+        .expect("Error reading file");
+    let vec_src_str = vectorize_input_string(&src_buffer[..]);
 
     let mut gen_file = File::open(gen_filename).expect("File not found");
     let mut gen_buffer = String::new();
-    let vec_gen_str = match gen_file.read_to_string(&mut gen_buffer) {
-        Ok(_v) => vectorize_input_string(&gen_buffer[..]),
-        Err(_e) => vec!["ERROR"],
-    };
+    gen_file
+        .read_to_string(&mut gen_buffer)
+        .expect("Error reading file");
+    let vec_gen_str = vectorize_input_string(&gen_buffer[..]);
 
     let transitions = get_transitions(vec_src_str);
     println!(
