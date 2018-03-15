@@ -21,7 +21,7 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 #This will be changed at some point to a function that unzips a zip folder containing multiple files of scripts (based on show) and will iterate through each file, maybe?
 def read_data(filename):
     with open(filename, 'r') as f:
-        nontok_data = [word for line in f for word in line.split()]
+        nontok_data = [word for line in f for word in line.lower().split()]
         tokdata = [word_tokenize(i) for i in nontok_data]
         data = []
 
@@ -63,8 +63,8 @@ def build_dataset(words, n_words):
     #dictionary allows you to look up the number via it's word
 
 
-data, count, dictionary, revdictionary = build_dataset(vocab, vocabsize);
-
+data, count, dictionary, revdictionary = build_dataset(vocab, 50000);
+#CHANGE 2nd param back to vocabsize if you're having problems
 
 print(revdictionary)
 vocabsize = len(revdictionary)
