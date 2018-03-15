@@ -17,7 +17,9 @@ must be associated with its respective part of speech.  This step should occur i
 4. Read text into main training file.  If we read some number of batches at a time, then for each
 batch we load into the script, we must feed into the RNN that word's respective embedding and
 one-hot part of speech.  Two options here:
+
     a. zero-pad the one-hot vector to be the same length as the word embedding
+
     b. feed two inputs into the RNN and feed the one-hot part of speech into an embedding layer
 
 The latter should theoretically give a better end result, but this will have to be iterated on.
