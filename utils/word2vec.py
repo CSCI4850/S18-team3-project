@@ -174,7 +174,7 @@ with graph.as_default():
 
 
 
-num_steps = 100001
+num_steps = 10001
 
 with tf.Session(graph=graph) as session:
     # we must initialize all variables before using them
@@ -226,8 +226,8 @@ with tf.Session(graph=graph) as session:
         embedplusword[word] = final_embeddings[dictionary[word]]
 
    # Uncomment these lines to print out the contents of the dictionary
- #   for i in embedplusword:
-  #      print(i, embedplusword[i])    
+    for i in embedplusword:
+        print(i, embedplusword[i])    
 
 
 

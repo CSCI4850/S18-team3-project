@@ -5,6 +5,7 @@ from collections import OrderedDict
 from nltk.data import load
 from keras.utils import to_categorical
 
+
 def enumerate_tags():
     ''' 
     Enumerating part of speech tags
