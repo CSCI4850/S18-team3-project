@@ -22,7 +22,7 @@ one-hot part of speech.  Two options here:
 
     b. feed two inputs into the RNN and feed the one-hot part of speech into an embedding layer
 
-The latter should theoretically give a better end result, but this will have to be iterated on.
+    The latter should theoretically give a better end result, but this will have to be iterated on.
 
 ## Model
 1. Need to design a simple RNN
