@@ -217,11 +217,21 @@ with tf.Session(graph=graph) as session:
                     log_str = "%s %s," % (log_str, close_word)
                 print(log_str)
     final_embeddings = normalized_embeddings.eval() #Saves embeddings for use in other tensors
-#    np.savetxt('final_embedding_dic.txt', final_embeddings)
+    #np.savetxt('final_embedding_dic.txt', final_embeddings)
+
+    #A dictionary in the format of {word: [embeddings]}
+    embedplusword = {}
+
+    for word in dictionary:
+        embedplusword[word] = final_embeddings[dictionary[word]]
+
+   # Uncomment these lines to print out the contents of the dictionary
+ #   for i in embedplusword:
+  #      print(i, embedplusword[i])    
+
+
 
 #Prints out awesome data, the dots with similar words are closer together!
-
-
 def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
     assert low_dim_embs.shape[0] >= len(labels), "More labels than embeddings"
     # set plot size in inches
