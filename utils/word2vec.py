@@ -18,28 +18,28 @@ import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 
 #After tunning Sam's script to get all of the data from whatever URL, this retrieves it and creates a list full of words split just by spaces, 
-#This will be changed at some point to a function that unzips a zip folder containing multiple files of scripts (based on show) and will iterate through each file, maybe?
 def read_data(filename):
     with open(filename, 'r') as f:
         nontok_data = [word for line in f for word in line.split()]
         tokdata = [word_tokenize(i) for i in nontok_data]
         data = []
-
 	#tokdata holds the tokenized data
 	#using nltk's word_tokenize() function returns list of word(s), so can't will become ['can', 't'] -- so the lines below simply run through tokdata, which is a list of lists, and appends all words into one big list, instead of having lists inside of lists
         for wordList in tokdata:
             data += wordList
-
     return data
 
 #Entire, non-unique vocabulary
-vocab = read_data('../data/train/south_park.txt')
+path = '../data/train/'
+vocab = []
+#iterates through every file in the given directory and calls read_data on each file
+for filename in os.listdir(path):
+	vocab += read_data(path +filename)
+    #word_vec = final_embeddings[dictionary[word]]
 print('data size :  ', len(vocab))
-vocabsize = len(vocab)    #corpus?????
+vocabsize = len(vocab)
 
 #Builds a dictionary that stores the UNIQUE words.
-#I think there's a feature in nltk that allows us to filter out words that only appear n times, so that will probably be added at some point, as we are getting pretty silly mis-typed words 
-
 def build_dataset(words, n_words):
     #Process raw inputs into a dataset.
     count = [['UNK', -1]]  #unk is for unknown
@@ -63,10 +63,7 @@ def build_dataset(words, n_words):
     #dictionary allows you to look up the number via it's word
 
 
-data, count, dictionary, revdictionary = build_dataset(vocab, vocabsize);
-
-
-print(revdictionary)
+data, count, dictionary, revdictionary = build_dataset(vocab, 50000);
 vocabsize = len(revdictionary)
 vocabulary_size = len(revdictionary)
 
