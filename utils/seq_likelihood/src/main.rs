@@ -6,8 +6,7 @@
  * the likelihood of that string occuring.
  *
  * TODO:
- *  - Take input from stdin
- *  - properly parse and format input in the same way that Madison's word2vec does
+ *  - change metric to quantify likelihood of a sequence occuring in some better way
  *
  */
 
@@ -66,11 +65,14 @@ fn get_transitions(input_string: Vec<&str>) -> HashMap<&str, HashMap<&str, f64>>
     }
 
     // Convert next words into probabilities
+    /*
+     * SKIP THIS FOR NOW SO WE JUST HAVE A TALLY
     for (cur_word, transitions) in transitions.iter_mut() {
         for (_next_word, val) in transitions.iter_mut() {
             *val /= totals[&*cur_word];
         }
     }
+    */
 
     // return transition probabilities
     transitions
@@ -85,11 +87,12 @@ fn calc_likelihood<'a>(
         let cur_word = iter[0];
         let next_word = iter[1];
         if transitions.contains_key(&cur_word) && transitions[&cur_word].contains_key(&next_word) {
-            likelihood *= transitions[&cur_word][&next_word];
+            //likelihood *= transitions[&cur_word][&next_word];
+            likelihood += transitions[&cur_word][&next_word];
         }
     }
 
-    likelihood
+    likelihood / transitions.len() as f64
 }
 
 // Converts a string slice to a vector of &str for use
