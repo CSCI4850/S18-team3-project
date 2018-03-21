@@ -43,18 +43,6 @@ def pos_tagging(paragraph):
     # returns a tuple of (string: original_word, string: part_of_speech_code)
     return tag_sentences
 
-
-def padarray(array, reference_shape, offsets):
-    # Create an array of zeros with the reference shape
-    result = np.zeros(reference_shape)
-    # Create a list of slices from offset to offset + shape in each dimension
-    insertHere = [slice(offsets[dim], offsets[dim] + array.shape[dim]) for dim in range(array.ndim)]
-    # Insert the array in the result at the specified offsets
-    result[insertHere] = array
-    return result
-
-
-
 def pos_tag_alt(text):
     '''
     Calculates the part of speech for each word in text.
