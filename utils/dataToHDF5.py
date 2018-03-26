@@ -18,25 +18,31 @@ for keys in dictionary.keys():
 
 embedPlusPos = []
 embedder = []
+finalDict = {}
 for key, vals in embedplusword.items():
     try:
         embedPlusPos = zip(vals, wordPlusPos[key])
         x,y = zip(*embedPlusPos)
         embedder.append((x, y))
+        finalDict[key] = (x, y)
+
     except ValueError:
         pass
 
+
+
+
 #opens up hdf5 file to write our [([embeddings], [pos])] to the file
 h5f = h5py.File('embedPlusPos.h5', 'w')
-h5f.create_dataset('dataset1', data = str(embedder))
+h5f.create_dataset('dataset1', data = str(finalDict))
 h5f.close()
-
 
 #used to retrieve the data stored in our hdf5 file
 #stored in h5fData
 h5fread = h5py.File('embedPlusPos.h5', 'r')
 item = h5fread['dataset1']
-h5fData = item.value    
+h5fData = item.value
+#print(h5fData)
 h5fread.close()
 
 
