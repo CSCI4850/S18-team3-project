@@ -6,7 +6,6 @@ from collections import OrderedDict
 from nltk.data import load
 from keras.utils import to_categorical
 
-
 def enumerate_tags():
     ''' 
     Enumerating part of speech tags
@@ -53,15 +52,17 @@ def pos_tag_alt(text):
     '''
     tokenized = pos_tag(word_tokenize(text))
     categorical_token_list = []
-    for tup in tokenized:
-        parsed_pos_pair = list(tup)
-        parsed_pos_pair[1] = enumerate_tags()[parsed_pos_pair[1]]
-        parsed_pos_pair[1] = np.pad(parsed_pos_pair[1], (0, 83), 'constant')
-        categorical_token_list.append(tuple(parsed_pos_pair))
+    try:    
+        for tup in tokenized:
+            parsed_pos_pair = list(tup)
+            parsed_pos_pair[1] = enumerate_tags()[parsed_pos_pair[1]]
+            parsed_pos_pair[1] = np.pad(parsed_pos_pair[1], (0, 83), 'constant')
+            categorical_token_list.append(parsed_pos_pair[1])
+    except KeyError:
+        pass
     return categorical_token_list
 
 
 if __name__ == '__main__':
     ''' Testing part of speech tagger '''
-    s = "This is definitely a sentence, dude."
-    print(pos_tag_alt(s))
+
