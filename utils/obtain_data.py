@@ -103,4 +103,6 @@ def get_rick_and_morty():
 
 if __name__ == "__main__":
     get_south_park()
+    get_rick_and_morty()
+    get_simpsons()
     print("complete")

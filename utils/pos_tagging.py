@@ -1,9 +1,11 @@
 from nltk import pos_tag, word_tokenize
 from nltk.data import load as load_nltk_data
 import os
+import numpy as np
 from collections import OrderedDict
 from nltk.data import load
 from keras.utils import to_categorical
+
 
 def enumerate_tags():
     ''' 
@@ -14,7 +16,6 @@ def enumerate_tags():
     # read tagset data
     tagset_help = os.path.join("help", "tagsets", "upenn_tagset.pickle")
     load_nltk_data('nltk:'+tagset_help)
-
     # get tags
     tag_dict = load_nltk_data(tagset_help)
     tags = list(tag_dict.keys())
@@ -42,7 +43,6 @@ def pos_tagging(paragraph):
     # returns a tuple of (string: original_word, string: part_of_speech_code)
     return tag_sentences
 
-
 def pos_tag_alt(text):
     '''
     Calculates the part of speech for each word in text.
@@ -56,6 +56,7 @@ def pos_tag_alt(text):
     for tup in tokenized:
         parsed_pos_pair = list(tup)
         parsed_pos_pair[1] = enumerate_tags()[parsed_pos_pair[1]]
+        parsed_pos_pair[1] = np.pad(parsed_pos_pair[1], (0, 83), 'constant')
         categorical_token_list.append(tuple(parsed_pos_pair))
     return categorical_token_list
 
