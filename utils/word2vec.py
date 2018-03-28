@@ -17,7 +17,7 @@ from tensorflow.contrib.tensorboard.plugins import projector
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 
-#After tunning Sam's script to get all of the data from whatever URL, this retrieves it and creates a list full of words split just by spaces, 
+#After tunning Sam's script to get all of the data from whatever URL, this retrieves it and creates a list full of words split just by spaces,
 def read_data(filename):
     with open(filename, 'r') as f:
         nontok_data = [word for line in f for word in line.split()]
@@ -35,9 +35,8 @@ vocab = []
 #iterates through every file in the given directory and calls read_data on each file
 for filename in os.listdir(path):
 	vocab += read_data(path +filename)
-    #word_vec = final_embeddings[dictionary[word]]
-print('data size :  ', len(vocab))
 vocabsize = len(vocab)
+
 
 #Builds a dictionary that stores the UNIQUE words.
 def build_dataset(words, n_words):
@@ -67,8 +66,19 @@ data, count, dictionary, revdictionary = build_dataset(vocab, 50000);
 vocabsize = len(revdictionary)
 vocabulary_size = len(revdictionary)
 
+writeFile = open('uniqueVocab.txt', 'w')
+for item in dictionary:
+    try:
+        if item.find('#') != -1:
+            writeFile.write("%s\n" % str(item))
+    except KeyError:
+        pass
+
+writeFile.close()
+
 
 #If you'd like to see these, uncomment below
+#print("DATA          :")
 #print(data)
 #print(count)
 #print(dictionary)
@@ -76,8 +86,8 @@ vocabulary_size = len(revdictionary)
 
 
 del vocab  # Hint to reduce memory.
-print('Most common words (+UNK)', count[:5])
-print('Sample data', data[:10], [revdictionary[i] for i in data[:10]])
+#print('Most common words (+UNK)', count[:5])
+#print('Sample data', data[:10], [revdictionary[i] for i in data[:10]])
 
 data_index = 0
 
@@ -113,12 +123,6 @@ def generate_batch(batch_size, num_skips, skip_window):
 
 
 batch, labels = generate_batch(batch_size=8, num_skips=2, skip_window=1)
-for i in range(8):
-  print(batch[i], revdictionary[batch[i]], '->', labels[i, 0],
-        revdictionary[labels[i, 0]])
-
-
-
 batch_size = 128
 embedding_size = 128  # Dimension of the embedding vector.
 skip_window = 1  # How many words to consider left and right.
@@ -142,7 +146,7 @@ with graph.as_default():
     train_inputs = tf.placeholder(tf.int32, shape=[batch_size])
     train_labels = tf.placeholder(tf.int32, shape=[batch_size, 1])
     valid_dataset = tf.constant(valid_examples, dtype=tf.int32)
-    
+
     # operations and variables
     # look up embeddings for inputs
     embeddings = tf.Variable(tf.random_uniform([vocabulary_size, embedding_size], -1.0, 1.0))
@@ -156,7 +160,7 @@ with graph.as_default():
     # tf.nce_loss automatically draws a new sample of the negative labels each time we evaluate the loss.
     loss = tf.reduce_mean(tf.nn.nce_loss(weights=nce_weights, biases=nce_biases,
                      labels=train_labels, inputs=embed, num_sampled=num_sampled, num_classes=vocabulary_size))
-    
+
     # construct the SGD optimizer using a learning rate of 1.0
     optimizer = tf.train.GradientDescentOptimizer(1.0).minimize(loss)
 
@@ -167,7 +171,7 @@ with graph.as_default():
     similarity = tf.matmul(valid_embeddings, normalized_embeddings, transpose_b=True)
 
     # add variable initializer
-    init = tf.global_variables_initializer() 
+    init = tf.global_variables_initializer()
 
 
 
@@ -176,20 +180,20 @@ num_steps = 10001
 with tf.Session(graph=graph) as session:
     # we must initialize all variables before using them
     init.run()
-    print('initialized.')
-    
+ #   print('initialized.')
+
     # loop through all training steps and keep track of loss
     average_loss = 0
     for step in xrange(num_steps):
         # generate a minibatch of training data
         batch_inputs, batch_labels = generate_batch(batch_size, num_skips, skip_window)
         feed_dict = {train_inputs: batch_inputs, train_labels: batch_labels}
-        
+
         # we perform a single update step by evaluating the optimizer operation (including it
         # in the list of returned values of session.run())
         _, loss_val = session.run([optimizer, loss], feed_dict=feed_dict)
         average_loss += loss_val
-        
+
         # print average loss every 2,000 steps
         if step % 2000 == 0:
             if step > 0:
@@ -197,7 +201,7 @@ with tf.Session(graph=graph) as session:
             # the average loss is an estimate of the loss over the last 2000 batches.
             print("Average loss at step ", step, ": ", average_loss)
             average_loss = 0
-        
+
         # computing cosine similarity (expensive!)
         if step % 10000 == 0:
             sim = similarity.eval()
@@ -220,12 +224,7 @@ with tf.Session(graph=graph) as session:
     embedplusword = {}
 
     for word in dictionary:
-        embedplusword[word] = final_embeddings[dictionary[word]]
-
-   # Uncomment these lines to print out the contents of the dictionary
-    for i in embedplusword:
-        print(i, embedplusword[i])    
-
+        embedplusword[word] = [final_embeddings[dictionary[word]]]
 
 
 #Prints out awesome data, the dots with similar words are closer together!
@@ -249,7 +248,7 @@ try:
     # import t-SNE and matplotlib.pyplot
     from sklearn.manifold import TSNE
     import matplotlib.pyplot as plt
-    
+
  #   %matplotlib inline   --- only for jupyter
 
     # create the t-SNE object with 2 components, PCA initialization, and 5000 iterations
