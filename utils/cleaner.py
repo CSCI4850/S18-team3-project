@@ -20,16 +20,13 @@ def main(argv):
             while line == '\n':
                 line = data_in.readline()
 
-            while line.find('\t') != -1:
-                line = line.replace('\t', ' ')
+            # Remove lines that start with ' - '
+            if line[:3].find(' - ') != -1:
+                line = line[3:]
 
             # Remove spaces at start of line
             while line[0] == ' ':
                 line = line[1:]
-
-            # Remove lines that start with ' - '
-            if line[:3].find(' - ') != -1:
-                line = line[3:]
 
             # Create new lines that have ' - ' in them
             while line.find(' - ') != -1:
@@ -55,13 +52,9 @@ def main(argv):
             while line.find('. ') != -1:
                 line = line.replace('. ', '.\n')
 
-            while line.find('"') != -1:
-                line = line.replace('"', '')
-
-            while line.find('  ') != -1:
-                line = line.replace('  ', ' ')
-
             line = line.lower()
+
+            line = line.replace('  ', ' ')
 
             # Correction to lines ending in Mr. Mrs. Ms. Dr.
             if line[-5:] == ' mr.\n':
@@ -87,25 +80,12 @@ def main(argv):
             else:
                 pass
 
-            while line.find('[') != -1 and line.find(']') != -1:
-                line = line[:line.find('[')]
-                line = line[line.find(']')+1:]
-
-            if line.find(':') != -1:
-                line = line[line.find(':') + 1:]
-
             line = line.replace('. " ', '."' )
-
-            while line.find('  ') != -1:
-                line = line.replace('  ', ' ')
-
-            if line == ' ':
-                line = ''
-
             buff += line
 
-
             line = data_in.readline()
+            while line == '\n':
+                line = data_in.readline()
 
 
     with open('data_out.txt', 'w') as data_out:
@@ -117,12 +97,8 @@ def main(argv):
         buff = buff.replace('?!\n', '?! <end>\n<start> ')
         buff = buff.replace('!?\n', '!? <end>\n<start> ')
         buff = buff[:-8]
-        buff = buff.replace('<start>  ', '<start> ' )
-        buff = buff.replace('<start>  <end>\n', '')
-        buff = buff.replace('<start> <end>\n', '')
 
         data_out.write(buff)
-
 
     with open('data_out.txt', 'r+') as data:
         buff = data.read()
@@ -146,7 +122,6 @@ def main(argv):
                 name = name.rstrip()
 
         with open('../data/female.txt', 'r') as names:
-            print('...')
             name = names.readline()
             name = name.rstrip()
             while len(name):
