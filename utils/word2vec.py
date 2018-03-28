@@ -181,19 +181,19 @@ with tf.Session(graph=graph) as session:
     # we must initialize all variables before using them
     init.run()
  #   print('initialized.')
-    
+
     # loop through all training steps and keep track of loss
     average_loss = 0
     for step in xrange(num_steps):
         # generate a minibatch of training data
         batch_inputs, batch_labels = generate_batch(batch_size, num_skips, skip_window)
         feed_dict = {train_inputs: batch_inputs, train_labels: batch_labels}
-        
+
         # we perform a single update step by evaluating the optimizer operation (including it
         # in the list of returned values of session.run())
         _, loss_val = session.run([optimizer, loss], feed_dict=feed_dict)
         average_loss += loss_val
-        
+
         # print average loss every 2,000 steps
         if step % 2000 == 0:
             if step > 0:

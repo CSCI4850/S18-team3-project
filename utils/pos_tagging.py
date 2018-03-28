@@ -65,4 +65,3 @@ def pos_tag_alt(text):
 
 if __name__ == '__main__':
     ''' Testing part of speech tagger '''
-

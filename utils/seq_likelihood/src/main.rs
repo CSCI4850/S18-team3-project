@@ -87,12 +87,11 @@ fn calc_likelihood<'a>(
         let cur_word = iter[0];
         let next_word = iter[1];
         if transitions.contains_key(&cur_word) && transitions[&cur_word].contains_key(&next_word) {
-            //likelihood *= transitions[&cur_word][&next_word];
-            likelihood += transitions[&cur_word][&next_word];
+            likelihood += (1_f64 + transitions[&cur_word][&next_word]).ln();
         }
     }
 
-    likelihood / transitions.len() as f64
+    likelihood
 }
 
 // Converts a string slice to a vector of &str for use
