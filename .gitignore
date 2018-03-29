@@ -1,3 +1,4 @@
 data/
 .ipynb_checkpoints/
-utils/seq_likelihood/target/debug
+utils/seq_likelihood/target
+utils/embedPlusPos.h5
