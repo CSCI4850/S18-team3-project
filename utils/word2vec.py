@@ -29,13 +29,32 @@ def read_data(filename):
             data += wordList
     return data
 
+
+
 #Entire, non-unique vocabulary
 path = '../data/train/'
 vocab = []
 #iterates through every file in the given directory and calls read_data on each file
 for filename in os.listdir(path):
 	vocab += read_data(path +filename)
+
+#vocab = read_data('data_out.txt')
 vocabsize = len(vocab)
+
+
+uniqueVocab = open("uniquevocab.txt", "w")
+uniqueVocab.write("Total number of words in corpus: ")
+uniqueVocab.write(str(vocabsize) + '\n')
+
+uniqueSet = set(vocab)
+uniqueVocab.write("Total number of unique words: ")
+uniqueVocab.write(str(len(uniqueSet)) + '\n' + '\n')
+
+
+for un in uniqueSet:
+	uniqueVocab.write(un + '\n')
+uniqueVocab.close()
+
 
 
 #Builds a dictionary that stores the UNIQUE words.
@@ -66,15 +85,15 @@ data, count, dictionary, revdictionary = build_dataset(vocab, 50000);
 vocabsize = len(revdictionary)
 vocabulary_size = len(revdictionary)
 
-writeFile = open('uniqueVocab.txt', 'w')
-for item in dictionary:
-    try:
-        if item.find('#') != -1:
-            writeFile.write("%s\n" % str(item))
-    except KeyError:
-        pass
+#writeFile = open('uniqueVocab.txt', 'w')
+#for item in dictionary:
+#    try:
+#        if item.find('#') != -1:
+#            writeFile.write("%s\n" % str(item))
+#    except KeyError:
+#        pass
 
-writeFile.close()
+#writeFile.close()
 
 
 #If you'd like to see these, uncomment below
@@ -175,7 +194,7 @@ with graph.as_default():
 
 
 
-num_steps = 100001
+num_steps = 10001
 
 with tf.Session(graph=graph) as session:
     # we must initialize all variables before using them
@@ -225,6 +244,8 @@ with tf.Session(graph=graph) as session:
 
     for word in dictionary:
         embedplusword[word] = [final_embeddings[dictionary[word]]]
+
+
 
 
 #Prints out awesome data, the dots with similar words are closer together!
