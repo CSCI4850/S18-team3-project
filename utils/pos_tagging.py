@@ -7,7 +7,7 @@ from nltk.data import load
 from keras.utils import to_categorical
 
 def enumerate_tags():
-    '''
+    ''' 
     Enumerating part of speech tags
     Returns:
         tag_dict: dict<String, ndarray>, mapping part of speech to categorical one-hot
@@ -52,7 +52,7 @@ def pos_tag_alt(text):
     '''
     tokenized = pos_tag(word_tokenize(text))
     categorical_token_list = []
-    try:
+    try:    
         for tup in tokenized:
             parsed_pos_pair = list(tup)
             parsed_pos_pair[1] = enumerate_tags()[parsed_pos_pair[1]]
