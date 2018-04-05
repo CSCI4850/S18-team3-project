@@ -7,6 +7,7 @@ def main(argv):
 
     try:
         filename = argv[1]
+        fileout = argv[2]
     except:
         print('you need to supply a filename as an argument.')
         exit()
@@ -24,37 +25,43 @@ def main(argv):
             if line[:3].find(' - ') != -1:
                 line = line[3:]
 
+            if line.find(':'):
+                line = line[line.find(':') + 2:]
+
             # Remove spaces at start of line
-            while line[0] == ' ':
+            while len(line) and line[0] == ' ':
                 line = line[1:]
 
             # Create new lines that have ' - ' in them
-            while line.find(' - ') != -1:
-                line = line.replace(' - ', '\n')
+
+            line = line.replace(' - ', '\n')
 
             # Remove any '- ' in a line.
-            while line.find('- ') != -1:
-                line = line.replace('- ', '')
+
+            line = line.replace('- ', '')
 
             # if there are multiple sentences on a line, split them
-            while line.find('?! ') != -1:
-                line = line.replace('?! ', '?!\n')
-
-            while line.find('!? ') != -1:
-                line = line.replace('!? ', '!?\n')
-
-            while line.find('? ') != -1:
-                line = line.replace('? ', '?\n')
-
-            while line.find('! ') != -1:
-                line = line.replace('! ', '!\n')
-
-            while line.find('. ') != -1:
-                line = line.replace('. ', '.\n')
+            line = line.replace('?! ', '?!\n')
+            line = line.replace('!? ', '!?\n')
+            line = line.replace('? ', '?\n')
+            line = line.replace('! ', '!\n')
+            line = line.replace('. ', '.\n')
 
             line = line.lower()
 
-            line = line.replace('  ', ' ')
+            start = line.find('[')
+            end = line.find(']')
+            while start != -1 and end != -1 and start != end:
+                remove = line[start:end + 1]
+                if len(remove) != 0:
+                    line = line.replace(remove, '')
+                    start = line.find('[')
+                    end = line.find(']')
+                else:
+                    break
+
+            line = line.replace('[', '')
+            line = line.replace(']', '')
 
             # Correction to lines ending in Mr. Mrs. Ms. Dr.
             if line[-5:] == ' mr.\n':
@@ -80,15 +87,17 @@ def main(argv):
             else:
                 pass
 
-            line = line.replace('. " ', '."' )
+            line = line.replace('" ', '"')
+
+            if line == '-':
+                line = ''
+
             buff += line
 
             line = data_in.readline()
-            while line == '\n':
-                line = data_in.readline()
 
 
-    with open('data_out.txt', 'w') as data_out:
+    with open(fileout, 'w') as data_out:
         buff = "<start> " + buff
         buff = buff.replace('\n', ' <end>\n<start> ') # No punctuation
         buff = buff.replace('.\n', '. <end>\n<start> ')
@@ -96,17 +105,24 @@ def main(argv):
         buff = buff.replace('!\n', '! <end>\n<start> ')
         buff = buff.replace('?!\n', '?! <end>\n<start> ')
         buff = buff.replace('!?\n', '!? <end>\n<start> ')
-        buff = buff[:-8]
 
+        while buff.find('  ') != -1:
+            buff = buff.replace('  ', ' ')
+
+        buff = buff.replace('<start> <end>', '')
+        buff = buff.replace('\n\n', '\n')
+
+        buff = buff[:-8]
         data_out.write(buff)
 
-    with open('data_out.txt', 'r+') as data:
+    with open(fileout, 'r+') as data:
         buff = data.read()
         with open('../data/male.txt', 'r') as names:
             name = names.readline()
             name = name.rstrip()
             while len(name):
                 # note '?!' and '!?' are caught by '?' and '!'
+                """
                 buff = buff.replace(' ' + name.lower() + ' ', ' ' + name + ' ')
                 buff = buff.replace(' ' + name.lower() + ',', ' ' + name + ',')
                 buff = buff.replace(' ' + name.lower() + '.', ' ' + name + '.')
@@ -117,7 +133,7 @@ def main(argv):
                 buff = buff.replace(' ' + name.lower() + '"', ' ' + name + '"')
                 buff = buff.replace('"' + name.lower() + ' ', '"' + name + ' ')
                 buff = buff.replace(' ' + name.lower() + "'s", ' ' + name + "'s")
-
+                """
                 name = names.readline()
                 name = name.rstrip()
 
@@ -126,6 +142,7 @@ def main(argv):
             name = name.rstrip()
             while len(name):
                 # note '?!' and '!?' are caught by '?' and '!'
+                """
                 buff = buff.replace(' ' + name.lower() + ' ', ' ' + name + ' ')
                 buff = buff.replace(' ' + name.lower() + ',', ' ' + name + ',')
                 buff = buff.replace(' ' + name.lower() + '.', ' ' + name + '.')
@@ -136,6 +153,7 @@ def main(argv):
                 buff = buff.replace(' ' + name.lower() + '"', ' ' + name + '"')
                 buff = buff.replace('"' + name.lower() + ' ', '"' + name + ' ')
                 buff = buff.replace(' ' + name.lower() + "'s", ' ' + name + "'s")
+                """
 
                 name = names.readline()
                 name = name.rstrip()
