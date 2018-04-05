@@ -42,7 +42,7 @@ def recall_mapping(filepath):
     #stored in h5fData
     h5fread = h5py.File(filepath, 'r')
     item = h5fread['dataset1']
-    h5fData = dict(item.value
+    h5fData = dict(item.value)
     #print(h5fData)
     h5fread.close()
     return h5fData
