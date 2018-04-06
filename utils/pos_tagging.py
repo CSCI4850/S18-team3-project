@@ -19,6 +19,7 @@ def enumerate_tags():
     tag_dict = load_nltk_data(tagset_help)
     tags = list(tag_dict.keys())
     tags.sort()
+    #TODO: add the <START> and <END> tokens as their own special pos
     tag_dict = OrderedDict(zip(tags,
                                to_categorical(range(0, len(tags)),
                                               num_classes=len(tags))
