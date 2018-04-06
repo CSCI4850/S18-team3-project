@@ -36,6 +36,9 @@ def main(argv):
             while line.find('- ') != -1:
                 line = line.replace('- ', '')
 
+            while line.find('--') != -1:
+                line = line.replace('--', '')
+
             # if there are multiple sentences on a line, split them
             while line.find('?! ') != -1:
                 line = line.replace('?! ', '?!\n')
@@ -61,22 +64,18 @@ def main(argv):
                 append = data_in.readline()
                 line = line.rstrip()
                 line += ' ' + append
-                line = line.replace(' mr. ', ' Mr. ')
             elif line[-6:] == ' mrs.\n':
                 append = data_in.readline()
                 line = line.rstrip()
                 line += ' ' + append
-                line = line.replace(' mrs. ', ' Mrs. ')
             elif line[-5:] == ' ms.\n':
                 append = data_in.readline()
                 line = line.rstrip()
                 line += ' ' + append
-                line = line.replace(' ms. ', ' Ms. ')
             elif line[-5:] == ' dr.\n':
                 append = data_in.readline()
                 line = line.rstrip()
                 line += ' ' + append
-                line = line.replace(' dr. ', ' Dr. ')
             else:
                 pass
 
@@ -98,49 +97,53 @@ def main(argv):
         buff = buff.replace('!?\n', '!? <end>\n<start> ')
         buff = buff[:-8]
 
+        buff = buff.replace('<start> <end>\n', '')
+        buff = buff.replace('<start> - <end>\n', '')
+
+
         data_out.write(buff)
 
-    with open('data_out.txt', 'r+') as data:
-        buff = data.read()
-        with open('../data/male.txt', 'r') as names:
-            name = names.readline()
-            name = name.rstrip()
-            while len(name):
-                # note '?!' and '!?' are caught by '?' and '!'
-                buff = buff.replace(' ' + name.lower() + ' ', ' ' + name + ' ')
-                buff = buff.replace(' ' + name.lower() + ',', ' ' + name + ',')
-                buff = buff.replace(' ' + name.lower() + '.', ' ' + name + '.')
-                buff = buff.replace(' ' + name.lower() + ':', ' ' + name + ':')
-                buff = buff.replace(' ' + name.lower() + ';', ' ' + name + ';')
-                buff = buff.replace(' ' + name.lower() + '!', ' ' + name + '!')
-                buff = buff.replace(' ' + name.lower() + '?', ' ' + name + '?')
-                buff = buff.replace(' ' + name.lower() + '"', ' ' + name + '"')
-                buff = buff.replace('"' + name.lower() + ' ', '"' + name + ' ')
-                buff = buff.replace(' ' + name.lower() + "'s", ' ' + name + "'s")
-
-                name = names.readline()
-                name = name.rstrip()
-
-        with open('../data/female.txt', 'r') as names:
-            name = names.readline()
-            name = name.rstrip()
-            while len(name):
-                # note '?!' and '!?' are caught by '?' and '!'
-                buff = buff.replace(' ' + name.lower() + ' ', ' ' + name + ' ')
-                buff = buff.replace(' ' + name.lower() + ',', ' ' + name + ',')
-                buff = buff.replace(' ' + name.lower() + '.', ' ' + name + '.')
-                buff = buff.replace(' ' + name.lower() + ':', ' ' + name + ':')
-                buff = buff.replace(' ' + name.lower() + ';', ' ' + name + ';')
-                buff = buff.replace(' ' + name.lower() + '!', ' ' + name + '!')
-                buff = buff.replace(' ' + name.lower() + '?', ' ' + name + '?')
-                buff = buff.replace(' ' + name.lower() + '"', ' ' + name + '"')
-                buff = buff.replace('"' + name.lower() + ' ', '"' + name + ' ')
-                buff = buff.replace(' ' + name.lower() + "'s", ' ' + name + "'s")
-
-                name = names.readline()
-                name = name.rstrip()
-
-        data.write(buff)
+    # with open('data_out.txt', 'r+') as data:
+    #     buff = data.read()
+    #     with open('../data/male.txt', 'r') as names:
+    #         name = names.readline()
+    #         name = name.rstrip()
+    #         while len(name):
+    #             # note '?!' and '!?' are caught by '?' and '!'
+    #             buff = buff.replace(' ' + name.lower() + ' ', ' ' + name + ' ')
+    #             buff = buff.replace(' ' + name.lower() + ',', ' ' + name + ',')
+    #             buff = buff.replace(' ' + name.lower() + '.', ' ' + name + '.')
+    #             buff = buff.replace(' ' + name.lower() + ':', ' ' + name + ':')
+    #             buff = buff.replace(' ' + name.lower() + ';', ' ' + name + ';')
+    #             buff = buff.replace(' ' + name.lower() + '!', ' ' + name + '!')
+    #             buff = buff.replace(' ' + name.lower() + '?', ' ' + name + '?')
+    #             buff = buff.replace(' ' + name.lower() + '"', ' ' + name + '"')
+    #             buff = buff.replace('"' + name.lower() + ' ', '"' + name + ' ')
+    #             buff = buff.replace(' ' + name.lower() + "'s", ' ' + name + "'s")
+    #
+    #             name = names.readline()
+    #             name = name.rstrip()
+    #
+    #     with open('../data/female.txt', 'r') as names:
+    #         name = names.readline()
+    #         name = name.rstrip()
+    #         while len(name):
+    #             # note '?!' and '!?' are caught by '?' and '!'
+    #             buff = buff.replace(' ' + name.lower() + ' ', ' ' + name + ' ')
+    #             buff = buff.replace(' ' + name.lower() + ',', ' ' + name + ',')
+    #             buff = buff.replace(' ' + name.lower() + '.', ' ' + name + '.')
+    #             buff = buff.replace(' ' + name.lower() + ':', ' ' + name + ':')
+    #             buff = buff.replace(' ' + name.lower() + ';', ' ' + name + ';')
+    #             buff = buff.replace(' ' + name.lower() + '!', ' ' + name + '!')
+    #             buff = buff.replace(' ' + name.lower() + '?', ' ' + name + '?')
+    #             buff = buff.replace(' ' + name.lower() + '"', ' ' + name + '"')
+    #             buff = buff.replace('"' + name.lower() + ' ', '"' + name + ' ')
+    #             buff = buff.replace(' ' + name.lower() + "'s", ' ' + name + "'s")
+    #
+    #             name = names.readline()
+    #             name = name.rstrip()
+    #
+    #     data.write(buff)
 
 
 main(sys.argv)
