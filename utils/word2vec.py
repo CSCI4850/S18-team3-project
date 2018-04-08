@@ -156,13 +156,13 @@ if __name__ == '__main__':
 
 
     #Entire, non-unique vocabulary
-    path = os.path.join("..", "data", "train")
+  #  path = os.path.join("..", "data", "train")
     vocab = []
     #iterates through every file in the given directory and calls read_data on each file
-    for filename in os.listdir(path):
-            vocab += read_data(os.path.join(path, filename))
+ #   for filename in os.listdir(path):
+ #           vocab += read_data(os.path.join(path, filename))
 
-    #vocab = read_data('data_out.txt')
+    vocab = read_data('../data/train/cleandata.txt')
     vocabsize = len(vocab)
 
 
@@ -180,7 +180,7 @@ if __name__ == '__main__':
     uniqueVocab.close()
 
 
-    data, count, dictionary, revdictionary = build_dataset(vocab, 50000);
+    data, count, dictionary, revdictionary = build_dataset(vocab, len(vocab));
     vocabsize = len(revdictionary)
     vocabulary_size = len(revdictionary)
 
@@ -264,7 +264,7 @@ if __name__ == '__main__':
 
 
 
-    num_steps = 10001
+    num_steps = 100001
 
     with tf.Session(graph=graph) as session:
         # we must initialize all variables before using them

@@ -106,15 +106,16 @@ def main(argv):
 
 
     with open(fileout, 'w') as data_out:
-        buff = "<start> " + buff
-        buff = buff.replace('\n', ' <end>\n<start> ') # No punctuation
-        buff = buff.replace('.\n', '. <end>\n<start> ')
-        buff = buff.replace('?\n', '? <end>\n<start> ')
-        buff = buff.replace('!\n', '! <end>\n<start> ')
-        buff = buff.replace('?!\n', '?! <end>\n<start> ')
-        buff = buff.replace('!?\n', '!? <end>\n<start> ')
-        buff = buff.replace('<start> <end>\n', '')
-        buff = buff.replace('<start> - <end>\n', '')
+        buff = "ST " + buff
+       # buff = buff.replace('\n', ' <end>\n<start> ') # No punctuation
+        buff = buff.replace('\n', ' EN\nST ')
+        buff = buff.replace('.\n', '. EN\nST ')
+        buff = buff.replace('?\n', '? EN\nST ')
+        buff = buff.replace('!\n', '! EN\nST ')
+        buff = buff.replace('?!\n', '?! EN\nST ')
+        buff = buff.replace('!?\n', '!? EN\nST ')
+        buff = buff.replace('ST EN\n', '')
+        buff = buff.replace('ST - EN\n', '')
 
 
         data_out.write(buff)
