@@ -1,6 +1,48 @@
 import sys
-import os
 import re
+
+
+def has_prefix(line):
+    if len(line) >= 5:
+        return (line[-5:] == ' Mr.\n' or\
+                line[-5:] == ' mr.\n' or\
+                line[-5:] == ' Ms.\n' or\
+                line[-5:] == ' ms.\n' or\
+                line[-5:] == ' Dr.\n')
+
+    if len(line) >= 6:
+        return (line[-6:] == ' Mrs.\n' or\
+                line[-6:] == ' mrs.\n')
+
+
+def join(seq, line):
+    print(seq, line, end='')
+    line = re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', line)
+
+    print(seq, line)
+    print("len:",len(line))
+
+    seq[-1] = seq[-1].rstrip('\n') + ' ' + line[0]
+    line.remove(line[0])
+    seq += line
+    if seq[-1] == '':
+        seq = seq[:-1]
+
+    return seq
+
+
+def join_prefixes(seq):
+    i = 1
+
+    while i < len(seq) + 1:
+        if has_prefix(seq[i-1]) and i < len(seq):
+            seq[i-1:i+1] = [''.join(seq[i-1:i+1])]
+        i += 1
+
+    for i in range(len(seq)):
+        seq[i] = clear_whitespace(seq[i])
+
+    return seq
 
 
 def extract_quotes(para):
@@ -31,48 +73,10 @@ def clear_whitespace(line):
     while line.find('  ') != -1:
         line = line.replace('  ', ' ')
 
+    if line[0:2] == '  ':
+        line = line[2:]
+
     return line
-
-
-def join_prefixes(lst):
-
-    i = 0
-    while i < len(lst) - 1 and len(lst) > 1:
-        if len(lst[i]) > 6 and len(lst[i+1]) > 1:
-            if len(lst) > 1 and lst[i][-5:] == ' Mr.\n':
-                lst[i:i+2] = [' '.join(lst[i:i+2])]
-                i+= 1
-
-            if len(lst) > 1 and lst[i][-5:] == ' mr.\n':
-                lst[i:i+2] = [' '.join(lst[i:i+2])]
-                i+= 1
-
-            if len(lst) > 1 and lst[i][-6:] == ' Mrs.\n':
-                lst[i:i+2] = [' '.join(lst[i:i+2])]
-                i+= 1
-
-            if len(lst) > 1 and lst[i][-6:] == ' mrs.\n':
-                lst[i:i+2] = [' '.join(lst[i:i+2])]
-                i+= 1
-
-            if len(lst) > 1 and lst[i][-5:] == ' Ms.\n':
-                lst[i:i+2] = [' '.join(lst[i:i+2])]
-                i+= 1
-
-            if len(lst) > 1 and lst[i][-5:] == ' ms.\n':
-                lst[i:i+2] = [' '.join(lst[i:i+2])]
-                i+= 1
-
-            if len(lst) > 1 and lst[i][-5:] == ' Dr.\n':
-                lst[i:i+2] = [' '.join(lst[i:i+2])]
-                i+= 1
-
-            if len(lst) > 1 and lst[i][-5:] == ' dr.\n':
-                lst[i:i+2] = [' '.join(lst[i:i+2])]
-                i+= 1
-        i+=1
-
-    return lst
 
 
 def format_front(line):
@@ -98,21 +102,16 @@ def main(argv):
     with open(filename, 'r') as data_in:
         line = data_in.readline()
         while len(line):
-            para = re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', line)
-            para = extract_quotes(para)
-            para = list(filter(lambda a: a != '', para))
+            seq = re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', line)
+            seq = extract_quotes(seq)
+            seq = list(filter(lambda a: a != '', seq))
 
-            while len(para) and len(line):
-                another = data_in.readline()
-                if another == '':
-                    break
-                another = re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', another)
-                para = [line] + another
-                para = list(filter(lambda a: a != '', para))
+            while has_prefix(seq[-1]):
+                seq = join(seq, data_in.readline())
+                print('final', seq)
 
-            para = join_prefixes(para)
-            for l in range(len(para)):
-                line = para[l]
+            for l in range(len(seq)):
+                line = seq[l]
 
                 line = line.lower()
                 line = clear_whitespace(line)
