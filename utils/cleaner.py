@@ -3,7 +3,6 @@ import os
 import re
 
 
-
 def extract_quotes(para):
 
     to_return = []
@@ -38,7 +37,7 @@ def clear_whitespace(line):
 def join_prefixes(lst):
 
     i = 0
-    while i < len(lst) and len(lst) > 1:
+    while i < len(lst) - 1 and len(lst) > 1:
         if len(lst[i]) > 6 and len(lst[i+1]) > 1:
             if len(lst) > 1 and lst[i][-5:] == ' Mr.\n':
                 lst[i:i+2] = [' '.join(lst[i:i+2])]
@@ -56,19 +55,19 @@ def join_prefixes(lst):
                 lst[i:i+2] = [' '.join(lst[i:i+2])]
                 i+= 1
 
-            if len(lst) > 1 and lst[i][-5:] == ' Ms.\n' and len(lst) > 1:
+            if len(lst) > 1 and lst[i][-5:] == ' Ms.\n':
                 lst[i:i+2] = [' '.join(lst[i:i+2])]
                 i+= 1
 
-            if len(lst) > 1 and lst[i][-5:] == ' ms.\n' and len(lst) > 1:
+            if len(lst) > 1 and lst[i][-5:] == ' ms.\n':
                 lst[i:i+2] = [' '.join(lst[i:i+2])]
                 i+= 1
 
-            if len(lst) > 1 and lst[i][-5:] == ' Dr.\n' and len(lst) > 1:
+            if len(lst) > 1 and lst[i][-5:] == ' Dr.\n':
                 lst[i:i+2] = [' '.join(lst[i:i+2])]
                 i+= 1
 
-            if len(lst) > 1 and lst[i][-5:] == ' dr.\n' and len(lst) > 1:
+            if len(lst) > 1 and lst[i][-5:] == ' dr.\n':
                 lst[i:i+2] = [' '.join(lst[i:i+2])]
                 i+= 1
         i+=1
@@ -103,8 +102,10 @@ def main(argv):
             para = extract_quotes(para)
             para = list(filter(lambda a: a != '', para))
 
-            while len(para) == 1:
+            while len(para) and len(line):
                 another = data_in.readline()
+                if another == '':
+                    break
                 another = re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', another)
                 para = [line] + another
                 para = list(filter(lambda a: a != '', para))
