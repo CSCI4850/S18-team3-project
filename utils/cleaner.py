@@ -119,9 +119,9 @@ def main(argv):
                 line = line.lower()
                 line = clear_whitespace(line)
                 line = format_front(line)
-                line = '<start> ' + line + ' <end>\n'
+                line = 'ST ' + line + ' EN\n'
 
-                if len(line) > 15:
+                if len(line) > 7:
                     buff += line
             line = data_in.readline()
 
