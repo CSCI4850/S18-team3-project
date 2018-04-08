@@ -16,15 +16,19 @@ def has_prefix(line):
 
 
 def join(seq, line):
-    print(seq, line, end='')
+    # split the line to append into sentences
     line = re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', line)
 
-    print(seq, line)
-    print("len:",len(line))
-
+    # connect the last in seq to the first in line
     seq[-1] = seq[-1].rstrip('\n') + ' ' + line[0]
+
+    # remove the one connected
     line.remove(line[0])
+
+    # append the line for further proccesing
     seq += line
+
+    # sometimes an empty string appears.
     if seq[-1] == '':
         seq = seq[:-1]
 
@@ -108,7 +112,6 @@ def main(argv):
 
             while has_prefix(seq[-1]):
                 seq = join(seq, data_in.readline())
-                print('final', seq)
 
             for l in range(len(seq)):
                 line = seq[l]
