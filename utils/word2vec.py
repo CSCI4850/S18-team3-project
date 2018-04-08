@@ -162,7 +162,7 @@ if __name__ == '__main__':
  #   for filename in os.listdir(path):
  #           vocab += read_data(os.path.join(path, filename))
 
-    vocab = read_data('../data/train/cleandata.txt')
+    #vocab = read_data('../data/train/cleandata.txt')
     vocabsize = len(vocab)
 
 
