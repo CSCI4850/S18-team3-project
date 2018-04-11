@@ -31,22 +31,27 @@ for word_1, word_2 in pairs:
     else:
         model[word_1] = [word_2]
 
-#Generates 10 sentences that start with 'ST' and end in 'EN'
-for i in range(10):
-    count = 0
-    stcount = 0
-    first_word = np.random.choice(text)
-    newSentence = ['ST']
-    newSentence.append(first_word)
-    numWords = 30
-    #Sentences are less than 30 words
-    for i in range(numWords):
+
+writeFile = open("markovSentences.txt", "w")
+
+count = 0
+first_word = np.random.choice(text)
+newSentence = ['ST']
+newSentence.append(first_word)
+#Generates 1000 sequential sentences and writes them to markovSentences.txt
+while(count < 1000):
+    if (newSentence):
         newWord = np.random.choice(model[newSentence[-1]])
-        if (newWord == 'EN'):
-            newSentence.append(newWord)
-            output = " ".join(newSentence)
-            print(output)
-            break          
-        else:
-            newSentence.append(newWord)
+    if (newWord == 'EN'):
+        count += 1
+        newSentence.append(newWord)
+        output = " ".join(newSentence)
+        writeFile.write(output + '\n')
+        print(output + '\n')
+        newWord = np.random.choice(model[newSentence[-1]])
+        newSentence = [newWord]
+    else:
+        newSentence.append(newWord)
+
+writeFile.close()
 
