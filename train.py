@@ -12,7 +12,7 @@ from utils.word2vec import recall_mapping
 ########## SET DIRECTORIES ##########
 DATA_DIR = os.path.join("data", "train")
 EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.h5")
-corpus = os.path.join(DATA_DIR, "south_park.txt") # to be fixed later
+corpus = os.path.join(DATA_DIR, "south_park.txt")  # to be fixed later
 
 ########## IMPORT DATA ##########
 embeddings = recall_mapping(EMBEDDING_FILE)
@@ -26,20 +26,24 @@ data = []
 for word in corpus_data:
     if word in embeddings.keys():
         data.append(np.array(embeddings[word]).T)
-        #TODO: pos_tag corpus_data, append to eatch data element
+        # TODO: pos_tag corpus_data, append to eatch data element
 
+
+# TODO: split data into separate sentences
 data = np.array(data)
-print(data[0])
-print(data[0].shape)
-#print(embeddings[:5])
-print(data[:5])
-
 ground_truth = data.copy()
-ground_truth = ground_truth[1:-1]
+pre_ground_truth = ground_truth [:,0:ground_truth.shape[1]-1,:]
+post_ground_truth = ground_truth [:,1:ground_truth.shape[1],:]
+
 
 ########## LOAD MODEL ##########
 
-model = rnn(128)
+learning_rate = 1e-4
+
+model, encoder_model, decoder_model = rnn(embedding_size=128,
+                                          single_timestep_elements=data[0].shape[-1],
+                                          single_timestep_gt=ground_truth[0].shape[-1],
+                                          learning_rate=learning_rate)
 print(model.summary())
 
 ########## CALLBACKS ##########
@@ -47,13 +51,12 @@ print(model.summary())
 
 ########## TRAIN ##########
 
-#TODO: specify what Y should be
-#TODO: determine proper shapes for output
-model.fit(data[:-2], ground_truth[:,:,0],
-        batch_size=128,
-        epochs=1,
-        callbacks=[ModelCheckpoint('weights.hdf5', monitor='acc', verbose=0)])
+model.fit([data, pre_ground_truth], post_ground_truth,
+          batch_size=128,
+          epochs=1,
+          callbacks=[ModelCheckpoint('weights.hdf5', monitor='acc', verbose=0)])
 
-test = np.random.rand(1,128,1)
-print(test)
-print(model.predict(test))
+# TODO actually generate sentences
+start_token = np.random.rand(1, 128, 1)
+context = np.random.rand(1, 128, 1) # first predict on start token, store that here
+print(model.predict([start_token, context]))
