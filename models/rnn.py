@@ -1,10 +1,27 @@
 from keras.models import Model
 from keras.layers import Input, LSTM, Dense, Activation, concatenate, Flatten,\
-    Embedding, Lambda
+    Embedding, Lambda, Dropout, Reshape
 from keras.optimizers import Adam
 
-
 def rnn(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_dropout=0, learning_rate=1e-4):
+    inputs = Input(shape=(None, single_timestep_elements))
+
+    x = LSTM(50, name='a')(inputs)
+    x = LSTM(150, return_sequences=False, stateful=False, name='b')(x)
+    x = Dropout(0.2)(x)
+    x = LSTM(200, return_sequences=False, stateful=False, name='c')(x)
+    x = Dropout(0.2)(x)
+    x = LSTM(32, return_sequences=False, stateful=False, name='d')(x)
+    x = Dense(single_timestep_gt, activation='sigmoid')(x)
+
+    model = Model(inputs, x)
+    model.compile(loss='mean_squared_error',
+                optimizer=Adam(lr=learning_rate),
+                metrics=['accuracy'])
+
+    return model
+
+def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_dropout=0, learning_rate=1e-4):
 
     encoder_input = Input(shape=(None, single_timestep_elements))
     encoder_output, encoder_state_h, encoder_state_c = LSTM(
