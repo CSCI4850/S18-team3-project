@@ -29,19 +29,20 @@ def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt
 
     decoder_input = Input(shape=(None, single_timestep_gt))
     decoder_output, decoder_state_h, decoder_state_c = LSTM(embedding_size,
+                                                            #activation='linear',
                                                             recurrent_dropout=recurrent_dropout, 
                                                             return_sequences=True,
                                                             return_state=True)(decoder_input, initial_state=[encoder_state_h, encoder_state_c])
     decoder_output = Dense(
         single_timestep_gt, activation='tanh')(decoder_output)
 
-    decoder_output = Lambda((lambda x: x*2))(decoder_output)
+    #decoder_output = Lambda((lambda x: x*10))(decoder_output)
 
     model = Model([encoder_input, decoder_input], decoder_output)
 
     model.compile(optimizer=Adam(lr=learning_rate),
                   metrics=['accuracy'],
-                  loss='mean_squared_error')
+                  loss='mean_squared_error',)
 
     encoder_model = Model(encoder_input, [encoder_state_h, encoder_state_c])
 
@@ -49,6 +50,7 @@ def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt
     decoder_state_input_c = Input(shape=(embedding_size,))
 
     decoder_output, decoder_state_h, decoder_state_c = LSTM(embedding_size,
+                                                            #activation='linear',
                                                             recurrent_dropout=recurrent_dropout, 
                                                             return_state=True, 
                                                             return_sequences=True)(
@@ -56,7 +58,7 @@ def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt
                                 initial_state=[decoder_state_input_h, decoder_state_input_c])
     decoder_output = Dense(single_timestep_gt, activation='tanh')(decoder_output)
 
-    decoder_output = Lambda((lambda x: x*2))(decoder_output)
+    #decoder_output = Lambda((lambda x: x*10))(decoder_output)
     
     decoder_model = Model([decoder_input] + [decoder_state_input_h, decoder_state_input_c],
                           [decoder_output] + [decoder_state_h, decoder_state_c])

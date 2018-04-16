@@ -128,4 +128,5 @@ def main(argv):
     with open(fileout, 'w') as data_out:
         data_out.write(buff)
 
-main(sys.argv)
+if __name__ == '__main__':
+    main(sys.argv)

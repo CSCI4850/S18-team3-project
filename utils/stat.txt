@@ -1,0 +1,5 @@
+south_park_clean.txt
+Total number of words in corpus: 7590
+Total number of unique words: 1155
+Outlier count: 157
+

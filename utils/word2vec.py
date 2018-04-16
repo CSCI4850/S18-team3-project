@@ -156,7 +156,7 @@ if __name__ == '__main__':
 
 
     #Entire, non-unique vocabulary
-    path = os.path.join("..", "data", "train")
+    path = os.path.join("..", "data", "train", "cleaned")
     vocab = []
     #iterates through every file in the given directory and calls read_data on each file
     for filename in os.listdir(path):
