@@ -49,23 +49,21 @@ def build_dataset(words, n_words):
     #dictionary allows you to look up the number via it's word
 
 
-
-#Entire, non-unique vocabulary
+#all files in ../data/train/cleaned will be looped through and their stats will be found in stat.txt
 path = os.path.join("..", "data", "train", "cleaned")
 vocab = []
 
 uniqueVocab = open("stat.txt", "w")
-
-#iterates through every file in the given directory and calls read_data on each file
+#writes statistics to stat.txt
+#Stats: total words in corpus, total unique words, and count of outlier words
 for filename in os.listdir(path):
     indVocab = []
     indVocab = read_data(os.path.join(path, filename))
     vocab += read_data(os.path.join(path, filename))
     vocabsize = len(indVocab)
     data, count, dictionary, revdictionary = build_dataset(indVocab, vocabsize);
-   # vocabsize = len(revdictionary)
-
-    newVocab = []
+    
+    #if word occurs less than 5 times, count it as an outlier
     outlierCount = 0
     for item in count:
         if item[1] > 5:
@@ -81,30 +79,4 @@ for filename in os.listdir(path):
     uniqueVocab.write(str(outlierCount) + '\n' + '\n')
     #for un in uniqueSet:
     #    uniqueVocab.write(un + '\n')
-
-
-#vocab = read_data('../data/train/cleaned/cleanSouthPark.txt')
-#vocabsize = len(vocab)
-
-
-#uniqueVocab = open("stat.txt", "w")
-#uniqueVocab.write("South Park\n")
-#uniqueVocab.write("Total number of words in corpus: ")
-#uniqueVocab.write(str(vocabsize) + '\n')
-
-#uniqueSet = set(vocab)
-#uniqueVocab.write("Total number of unique words: ")
-#uniqueVocab.write(str(len(uniqueSet)) + '\n' + '\n')
-
-
-#for un in uniqueSet:
-#    uniqueVocab.write(un + '\n')
 uniqueVocab.close()
-
-
-
-del vocab  # Hint to reduce memory.
-    #print('Most common words (+UNK)', count[:5])
-    #print('Sample data', data[:10], [revdictionary[i] for i in data[:10]])
-
-
