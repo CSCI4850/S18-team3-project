@@ -36,10 +36,10 @@ def pos_tagging(paragraph):
     sentences = tokenizer.tokenize(paragraph)
 
     for word in sentences:
-        tok_sentences.append(nltk.word_tokenize(word))
+        tok_sentences.append(word_tokenize(word))
 
     for word in tok_sentences:
-        tag_sentences.append(nltk.pos_tag(word))
+        tag_sentences.append(pos_tag(word))
     # returns a tuple of (string: original_word, string: part_of_speech_code)
     return tag_sentences
 
@@ -65,4 +65,7 @@ def pos_tag_alt(text):
 
 
 if __name__ == '__main__':
+    print(pos_tagging("Pickle is here. I am pickle. Thank you"))
+
+
     ''' Testing part of speech tagger '''
