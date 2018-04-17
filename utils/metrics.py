@@ -6,61 +6,62 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 from pos_tagging import pos_tagging
 
 
-#print(textdistance.needleman_wunsch('text is hard', 'test is hard'))
-
-
-data = ["I am a cat.", "I am a pickle!", "I am not a hamburger.", "I go over the store.", "Yes, I am not a cat.", "No, I am not a dog.", "Firetruck goes fast."]
-
-def binary_distance(first, second):
-    #1.0 is labels are identical, 0.0 is they are different
-
-    if first == second:
-        return 1.0
-    else:
-        return 0.0
-
-count = 0
-prevWord = ''
-for item in data:
-    count = 0
-    for word in item.split():
-        count+=1
-        #print(prevWord, word)
-        #print(binary_distance(prevWord, word))
-        prevWord = word
-
-#print(binary_distance('NN', 'PN'))
-#print(binary_distance('PN','PN'))
-
-#for item in data:
-#    print(sent_tokenize(item))
-
-
-
-
 if __name__ == "__main__":
     sentOne = []
     sentTwo = []
-    item2 = ''
-    for item in data:
-        print(item + ' --vs-- ' + item2)
-        d = pos_tagging(item)
-        for couple in d:
+    contentOne = []
+    contentTwo = []
+    with open("markovSentences.txt", "r") as f:
+        contentOne = f.readlines()
+    contentOne = [x.strip() for x in contentOne]
+    with open("../data/train/cleaned/cleanRM.txt", "r") as f:
+        contentTwo = f.readlines()
+    contentTwo = [x.strip() for x in contentTwo]
+
+    
+    totalHamming = 0
+    totalCosine = 0
+    totalGotoh = 0
+    totalLev = 0
+    count = 0
+    for item in contentOne:
+        print(item + ' --vs-- ' + contentTwo[count])
+        posOne = pos_tagging(item)
+        posTwo = pos_tagging(contentTwo[count])
+        for x,y in zip(posOne, posTwo):
             sentOne = []
-            for word in couple:
-         #       print(str(word[1]))
-                sentOne.append(str(word[1]))
-            
+            sentTwo = []
+            for pair in x:
+                sentOne.append(str(pair[1]))
+            for pair in y:
+                sentTwo.append(str(pair[1]))
+            if (sentOne == ['NN']):
+                continue
+
             print(str(sentOne), str(sentTwo))
-            #print(textdistance.gotoh(str(sentOne), str(sentTwo)))
             print("hamming: ")
-            print(textdistance.hamming(str(sentOne), str(sentTwo)))
+            ham = textdistance.hamming(str(sentOne), str(sentTwo))
+            totalHamming += ham
+            print(ham)
             print("cosine:  ")
-            print(textdistance.cosine(str(sentOne), str(sentTwo)))
+            cos = textdistance.cosine(str(sentOne), str(sentTwo))
+            totalCosine += cos
+            print(cos)
             print("gotoh:  ")
-            print(textdistance.gotoh(str(sentOne), str(sentTwo)))
+            got = textdistance.gotoh(str(sentOne), str(sentTwo))
+            totalGotoh += got
+            print(got)
             print("levenshtein: ")
-            print(textdistance.levenshtein(str(sentOne), str(sentTwo)))
+            lev = textdistance.levenshtein(str(sentOne), str(sentTwo))
+            totalLev += lev
+            print(lev)
             print('\n')
             sentTwo = sentOne
-        item2 = item  
+        count += 1
+
+f = open("metricStats.txt", "w")
+f.write("Average Hamming:  " + str(totalHamming/ 1000) + '\n')
+f.write("Average Cosine:  " + str(totalCosine/1000) + '\n')
+f.write("Average Gotoh:  " + str(totalGotoh/1000) + '\n')
+f.write("Average Levenshtein:  " + str(totalLev/1000) + '\n')
+
