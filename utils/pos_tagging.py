@@ -1,6 +1,7 @@
 from nltk import pos_tag, word_tokenize
 from nltk.data import load as load_nltk_data
 import os
+import nltk
 import numpy as np
 from collections import OrderedDict
 from nltk.data import load
@@ -19,7 +20,8 @@ def enumerate_tags():
     tag_dict = load_nltk_data(tagset_help)
     tags = list(tag_dict.keys())
     tags.sort()
-    #TODO: add the <START> and <END> tokens as their own special pos
+    tags.append('<start>')
+    tags.append('<end>')
     tag_dict = OrderedDict(zip(tags,
                                to_categorical(range(0, len(tags)),
                                               num_classes=len(tags))
@@ -56,8 +58,12 @@ def pos_tag_alt(text):
     try:    
         for tup in tokenized:
             parsed_pos_pair = list(tup)
+            if (parsed_pos_pair[0] == 'ST'):
+                parsed_pos_pair[1] = '<start>'
+            elif (parsed_pos_pair[0] == 'EN'):
+                parsed_pos_pair[1] = '<end>'
             parsed_pos_pair[1] = enumerate_tags()[parsed_pos_pair[1]]
-            parsed_pos_pair[1] = np.pad(parsed_pos_pair[1], (0, 83), 'constant')
+            parsed_pos_pair[1] = np.pad(parsed_pos_pair[1], (0, 81), 'constant')
             categorical_token_list.append(parsed_pos_pair[1])
     except KeyError:
         pass
