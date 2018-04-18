@@ -156,15 +156,11 @@ if __name__ == '__main__':
 
 
     #Entire, non-unique vocabulary
-<<<<<<< HEAD
     path = os.path.join("..", "data", "train", "cleaned")
-=======
-  #  path = os.path.join("..", "data", "train")
->>>>>>> master
     vocab = []
     #iterates through every file in the given directory and calls read_data on each file
- #   for filename in os.listdir(path):
- #           vocab += read_data(os.path.join(path, filename))
+    for filename in os.listdir(path):
+            vocab += read_data(os.path.join(path, filename))
 
     #vocab = read_data('../data/train/cleandata.txt')
     vocabsize = len(vocab)
@@ -188,23 +184,6 @@ if __name__ == '__main__':
     vocabsize = len(revdictionary)
     vocabulary_size = len(revdictionary)
 
-    #writeFile = open('uniqueVocab.txt', 'w')
-    #for item in dictionary:
-    #    try:
-    #        if item.find('#') != -1:
-    #            writeFile.write("%s\n" % str(item))
-    #    except KeyError:
-    #        pass
-
-    #writeFile.close()
-
-
-    #If you'd like to see these, uncomment below
-    #print("DATA          :")
-    #print(data)
-    #print(count)
-    #print(dictionary)
-    #print(revdictionary)
 
 
     del vocab  # Hint to reduce memory.
