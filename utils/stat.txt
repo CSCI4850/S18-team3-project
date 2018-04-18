@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 cleanSouthPark.txt
 Total number of words in corpus: 1430968
 Total number of unique words: 27045
@@ -13,10 +12,4 @@ cleanRM.txt
 Total number of words in corpus: 83946
 Total number of unique words: 3569
 Outlier count: 1136
-=======
-south_park_clean.txt
-Total number of words in corpus: 7590
-Total number of unique words: 1155
-Outlier count: 157
->>>>>>> 5e121fb0718a8c31d94feedbe39b64050308b1dd
 
