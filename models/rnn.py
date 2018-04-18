@@ -2,6 +2,10 @@ from keras.models import Model
 from keras.layers import Input, LSTM, Dense, Activation, concatenate, Flatten,\
     Embedding, Lambda, Dropout, Reshape
 from keras.optimizers import Adam
+import keras.backend as K
+from keras import losses 
+from tensorflow import float16
+import numpy as np
 
 def rnn(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_dropout=0, learning_rate=1e-4):
     inputs = Input(shape=(None, single_timestep_elements))
@@ -41,8 +45,8 @@ def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt
     model = Model([encoder_input, decoder_input], decoder_output)
 
     model.compile(optimizer=Adam(lr=learning_rate),
-                  metrics=['accuracy'],
-                  loss='mean_squared_error',)
+                  #metrics=['accuracy'],
+                  loss='mean_absolute_error')
 
     encoder_model = Model(encoder_input, [encoder_state_h, encoder_state_c])
 

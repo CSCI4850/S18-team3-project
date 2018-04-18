@@ -43,10 +43,10 @@ if __name__ == '__main__':
 
     ########## LOAD MODEL ##########
 
-    learning_rate = 1e-6
+    learning_rate = 1e-4
 
-    model, encoder_model, decoder_model = rnn(embedding_size=16,
-                                              recurrent_dropout=0.2,
+    model, encoder_model, decoder_model = rnn(embedding_size=32,
+                                              recurrent_dropout=0,
                                               single_timestep_elements=data[0].shape[-1],
                                               single_timestep_gt=ground_truth[0].shape[-1],
                                               learning_rate=learning_rate)
@@ -57,8 +57,8 @@ if __name__ == '__main__':
     ########## TRAIN ##########
 
     model.fit([data, pre_ground_truth], post_ground_truth,
-              batch_size=256,
-              epochs=2,)
+              batch_size=len(data)//5,
+              epochs=10,)
 
     encoder_model.save(ENCODER_MODEL)
     decoder_model.save(DECODER_MODEL)
