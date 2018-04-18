@@ -71,7 +71,6 @@ def pos_tag_alt(text):
 
 
 if __name__ == '__main__':
-    print(pos_tagging("Pickle is here. I am pickle. Thank you"))
-
+    pos_tagging("Testing pos tagger.")
 
     ''' Testing part of speech tagger '''
