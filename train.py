@@ -7,7 +7,7 @@ import sys
 import os
 import json
 from tqdm import tqdm
-from models.rnn import encoder_decoder as rnn 
+from models.rnn import encoder_decoder as rnn
 from utils.word2vec import recall_mapping
 
 if __name__ == '__main__':
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     learning_rate = 1e-4
 
-    model, encoder_model, decoder_model = rnn(embedding_size=1024,
+    model, encoder_model, decoder_model = rnn(embedding_size=64,
                                               recurrent_dropout=0,
                                               single_timestep_elements=data[0].shape[-1],
                                               single_timestep_gt=ground_truth[0].shape[-1],
@@ -57,12 +57,14 @@ if __name__ == '__main__':
     ########## TRAIN ##########
 
     BATCH_SIZE = 2**6
-    NUM_EPOCHS = 10000
+    NUM_EPOCHS = 1
 
     try:
         model.fit([data, pre_ground_truth], post_ground_truth,
                   batch_size=BATCH_SIZE,
                   epochs=NUM_EPOCHS,)
+        encoder_model.save(ENCODER_MODEL)
+        decoder_model.save(DECODER_MODEL)
 
     except KeyboardInterrupt:
         encoder_model.save(ENCODER_MODEL)
