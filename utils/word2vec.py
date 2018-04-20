@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import collections
+from tqdm import tqdm
 import math
 import os
 import sys
@@ -15,8 +16,9 @@ from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 from tensorflow.contrib.tensorboard.plugins import projector
 import nltk
-import deepdish as dd
+import pickle
 import h5py
+import itertools
 from nltk.data import load
 from nltk import pos_tag
 from nltk.tokenize import word_tokenize, sent_tokenize
@@ -24,7 +26,21 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 # After tunning Sam's script to get all of the data from whatever URL, this retrieves
 # it and creates a list full of words split just by spaces,
 def read_data(filename):
-    with open(filename, 'r') as f:
+    with open(filename, 'r', encoding='utf8') as f:
+
+        nontok_data = []
+        tok_data = []
+
+        lines = map(lambda line: 
+                    word_tokenize(line.rstrip()), tqdm(f.readlines()))
+
+        data = list(itertools.chain.from_iterable(lines))
+
+        '''
+        for word in lines:
+            tokdata.append(word_tokenize(i))
+        
+
         nontok_data = [word for line in f for word in line.split()]
         tokdata = [word_tokenize(i) for i in nontok_data]
         data = []
@@ -35,6 +51,7 @@ def read_data(filename):
         # lists inside of lists
         for wordList in tokdata:
             data += wordList
+        '''
     return data
 
 
@@ -59,7 +76,9 @@ def save_mapping(filename, dictionary):
     #h5f = h5py.File(filename, 'w')
     #h5f.create_dataset('dataset1', data=str(dictionary))
     #h5f.close()
-    dd.io.save(filename, dictionary)
+    #dd.io.save(filename, dictionary)
+    with open(filename, 'wb') as f:
+        pickle.dump(dictionary, f, pickle.HIGHEST_PROTOCOL)
 
 def recall_mapping(filepath):
     '''
@@ -73,7 +92,9 @@ def recall_mapping(filepath):
 
     return mapping
     '''
-    return dd.io.load(filepath)
+    #return dd.io.load(filepath)
+    with open(filepath, 'rb') as f:
+        return pickle.load(f)
 
 #Prints out awesome data, the dots with similar words are closer together!
 def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
@@ -160,14 +181,17 @@ def main(path, output_dictionary_file):
     #path = os.path.join("..", "data", "train", "cleaned")
     vocab = []
     #iterates through every file in the given directory and calls read_data on each file
-    for filename in os.listdir(path):
-            vocab += read_data(os.path.join(path, filename))
+    print("*** Adding vocab ***")
+    for filename in tqdm(os.listdir(path)):
+        if 'all_data' in filename:
+            continue
+        vocab += read_data(os.path.join(path, filename))
 
     #vocab = read_data('../data/train/cleandata.txt')
     vocabsize = len(vocab)
 
 
-    uniqueVocab = open("uniquevocab.txt", "w")
+    uniqueVocab = open("uniquevocab.txt", "w", encoding="utf8")
     uniqueVocab.write("Total number of words in corpus: ")
     uniqueVocab.write(str(vocabsize) + '\n')
 
@@ -175,8 +199,8 @@ def main(path, output_dictionary_file):
     uniqueVocab.write("Total number of unique words: ")
     uniqueVocab.write(str(len(uniqueSet)) + '\n' + '\n')
 
-
-    for un in uniqueSet:
+    print("Creating unique vocab")
+    for un in tqdm(uniqueSet):
             uniqueVocab.write(un + '\n')
     uniqueVocab.close()
 
@@ -213,6 +237,8 @@ def main(path, output_dictionary_file):
 
 
     graph = tf.Graph()
+
+    print("*** Creating embeddings ***")
 
     with graph.as_default():
         # input data

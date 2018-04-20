@@ -34,8 +34,7 @@ if __name__ == '__main__':
 
     ########## SET DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train", "cleaned")
-    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.hdf5")
-    corpus = os.path.join(DATA_DIR, "south_park_clean.txt")  # to be fixed later
+    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.pkl")
     ENCODER_MODEL = os.path.join("models", "encoder_model.hdf5")
     DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
 

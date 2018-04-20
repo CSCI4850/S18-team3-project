@@ -7,24 +7,24 @@ import sys
 import os
 import json
 from tqdm import tqdm
-from models.rnn import encoder_decoder_other as rnn 
+from models.rnn import encoder_decoder as rnn 
 from utils.word2vec import recall_mapping
 
 if __name__ == '__main__':
 
     ########## SET DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train", "cleaned")
-    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.hdf5")
+    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.pkl")
     ENCODER_MODEL = os.path.join("models", "encoder_model.hdf5")
     DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
-    corpus = os.path.join(DATA_DIR, "south_park.txt")  # TODO fixed later
+    corpus = os.path.join(DATA_DIR, "all_data.txt")
 
     ########## IMPORT DATA ##########
     embeddings = recall_mapping(EMBEDDING_FILE)
     print("**** Data Loaded ****")
 
     ########## PROCESS DATA ##########
-    with open(corpus, 'r') as f:
+    with open(corpus, 'r', encoding='utf8') as f:
         corpus_data = f.read().split()
 
     data = []
@@ -43,9 +43,9 @@ if __name__ == '__main__':
 
     ########## LOAD MODEL ##########
 
-    learning_rate = 1e-2
+    learning_rate = 1e-4
 
-    model, encoder_model, decoder_model = rnn(embedding_size=128,
+    model, encoder_model, decoder_model = rnn(embedding_size=1024,
                                               recurrent_dropout=0,
                                               single_timestep_elements=data[0].shape[-1],
                                               single_timestep_gt=ground_truth[0].shape[-1],
@@ -56,9 +56,14 @@ if __name__ == '__main__':
 
     ########## TRAIN ##########
 
-    model.fit([data, pre_ground_truth], post_ground_truth,
-              batch_size=len(data)//20,
-              epochs=1,)
+    BATCH_SIZE = 2**6
+    NUM_EPOCHS = 10000
 
-    encoder_model.save(ENCODER_MODEL)
-    decoder_model.save(DECODER_MODEL)
+    try:
+        model.fit([data, pre_ground_truth], post_ground_truth,
+                  batch_size=BATCH_SIZE,
+                  epochs=NUM_EPOCHS,)
+
+    except KeyboardInterrupt:
+        encoder_model.save(ENCODER_MODEL)
+        decoder_model.save(DECODER_MODEL)
