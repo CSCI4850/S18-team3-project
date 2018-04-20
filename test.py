@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     ########## SET DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train", "cleaned")
-    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.h5")
+    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.hdf5")
     corpus = os.path.join(DATA_DIR, "south_park_clean.txt")  # to be fixed later
     ENCODER_MODEL = os.path.join("models", "encoder_model.hdf5")
     DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     ########## LOAD MODEL ##########
 
-    loss = 'mean_squared_error'
+    loss = 'cosine'
 
     encoder_model = load_model(ENCODER_MODEL)
     encoder_model.compile(optimizer='Adam', loss=loss)

@@ -100,7 +100,10 @@ def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
 # generate batch data for mini-batch gradient descent
 # here, the gradient is averaged over a small number of samples,
 # as opposed to just one sample or ALL of the data
-def generate_batch(batch_size, num_skips, skip_window):
+data_index = 0
+
+def generate_batch(batch_size, num_skips, skip_window, data):
+  
   global data_index
   assert batch_size % num_skips == 0
   assert num_skips <= 2 * skip_window
@@ -152,11 +155,9 @@ def build_dataset(words, n_words):
     #dictionary allows you to look up the number via it's word
 
 
-if __name__ == '__main__':
-
-
+def main(path, output_dictionary_file):
     #Entire, non-unique vocabulary
-    path = os.path.join("..", "data", "train", "cleaned")
+    #path = os.path.join("..", "data", "train", "cleaned")
     vocab = []
     #iterates through every file in the given directory and calls read_data on each file
     for filename in os.listdir(path):
@@ -190,11 +191,11 @@ if __name__ == '__main__':
     #print('Most common words (+UNK)', count[:5])
     #print('Sample data', data[:10], [revdictionary[i] for i in data[:10]])
 
-    data_index = 0
+    #data_index = 0
 
 
 
-    batch, labels = generate_batch(batch_size=8, num_skips=2, skip_window=1)
+    batch, labels = generate_batch(batch_size=8, num_skips=2, skip_window=1, data=data)
     batch_size = 128
     embedding_size = 128  # Dimension of the embedding vector.
     skip_window = 1  # How many words to consider left and right.
@@ -258,7 +259,7 @@ if __name__ == '__main__':
         average_loss = 0
         for step in xrange(num_steps):
             # generate a minibatch of training data
-            batch_inputs, batch_labels = generate_batch(batch_size, num_skips, skip_window)
+            batch_inputs, batch_labels = generate_batch(batch_size, num_skips, skip_window, data=data)
             feed_dict = {train_inputs: batch_inputs, train_labels: batch_labels}
 
             # we perform a single update step by evaluating the optimizer operation (including it
@@ -299,10 +300,9 @@ if __name__ == '__main__':
             embedplusword[word] = [final_embeddings[dictionary[word]]]
 
     # final_dict = create_mapping(dictionary, embedplusword)
-    save_mapping("embedPlusPos.h5", embedplusword)
+    save_mapping(output_dictionary_file, embedplusword)
 
-
-
+    '''
     try:
         # import t-SNE and matplotlib.pyplot
         from sklearn.manifold import TSNE
@@ -321,3 +321,8 @@ if __name__ == '__main__':
 
     except ImportError:
         print("Please install sklearn, matplotlib, and scipy to visualize embeddings.")
+    '''
+
+if __name__ == '__main__':
+    path = os.path.join("..", "data", "train", "cleaned")
+    main(path, "embedPlusPos.hdf5")

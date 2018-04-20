@@ -7,17 +7,17 @@ import sys
 import os
 import json
 from tqdm import tqdm
-from models.rnn import encoder_decoder as rnn 
+from models.rnn import encoder_decoder_other as rnn 
 from utils.word2vec import recall_mapping
 
 if __name__ == '__main__':
 
     ########## SET DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train", "cleaned")
-    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.h5")
+    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.hdf5")
     ENCODER_MODEL = os.path.join("models", "encoder_model.hdf5")
     DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
-    corpus = os.path.join(DATA_DIR, "south_park_clean.txt")  # to be fixed later
+    corpus = os.path.join(DATA_DIR, "south_park.txt")  # TODO fixed later
 
     ########## IMPORT DATA ##########
     embeddings = recall_mapping(EMBEDDING_FILE)
@@ -43,9 +43,9 @@ if __name__ == '__main__':
 
     ########## LOAD MODEL ##########
 
-    learning_rate = 1e-4
+    learning_rate = 1e-2
 
-    model, encoder_model, decoder_model = rnn(embedding_size=32,
+    model, encoder_model, decoder_model = rnn(embedding_size=128,
                                               recurrent_dropout=0,
                                               single_timestep_elements=data[0].shape[-1],
                                               single_timestep_gt=ground_truth[0].shape[-1],
@@ -57,8 +57,8 @@ if __name__ == '__main__':
     ########## TRAIN ##########
 
     model.fit([data, pre_ground_truth], post_ground_truth,
-              batch_size=len(data)//5,
-              epochs=10,)
+              batch_size=len(data)//20,
+              epochs=1,)
 
     encoder_model.save(ENCODER_MODEL)
     decoder_model.save(DECODER_MODEL)
