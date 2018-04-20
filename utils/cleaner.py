@@ -103,7 +103,7 @@ def main(argv):
         exit()
 
     buff = str()
-    with open(filename, 'r') as data_in:
+    with open(filename, 'r', encoding="utf8") as data_in:
         line = data_in.readline()
         while len(line):
             seq = re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', line)
@@ -125,7 +125,8 @@ def main(argv):
                     buff += line
             line = data_in.readline()
 
-    with open(fileout, 'w') as data_out:
+    with open(fileout, 'w', encoding="utf8") as data_out:
         data_out.write(buff)
 
-main(sys.argv)
+if __name__ == '__main__':
+    main(sys.argv)

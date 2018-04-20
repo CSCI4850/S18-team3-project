@@ -1,0 +1,4 @@
+Average Hamming:  69.168
+Average Cosine:  0.6831296093313972
+Average Gotoh:  14.425799999999995
+Average Levenshtein:  50.023

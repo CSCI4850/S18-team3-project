@@ -3,57 +3,67 @@ Trains the model
 '''
 
 import numpy as np
+import sys
 import os
-from models.rnn import rnn
-from keras.callbacks import ModelCheckpoint
+import json
+from tqdm import tqdm
+from models.rnn import encoder_decoder as rnn 
 from utils.word2vec import recall_mapping
 
+if __name__ == '__main__':
 
-########## SET DIRECTORIES ##########
-DATA_DIR = os.path.join("data", "train")
-EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.h5")
-corpus = os.path.join(DATA_DIR, "south_park.txt") # to be fixed later
+    ########## SET DIRECTORIES ##########
+    DATA_DIR = os.path.join("data", "train", "cleaned")
+    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.pkl")
+    ENCODER_MODEL = os.path.join("models", "encoder_model.hdf5")
+    DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
+    corpus = os.path.join(DATA_DIR, "all_data.txt")
 
-########## IMPORT DATA ##########
-embeddings = recall_mapping(EMBEDDING_FILE)
-print("**** Data Loaded ****")
+    ########## IMPORT DATA ##########
+    embeddings = recall_mapping(EMBEDDING_FILE)
+    print("**** Data Loaded ****")
 
-########## PROCESS DATA ##########
-with open(corpus, 'r') as f:
-    corpus_data = f.read().split()
+    ########## PROCESS DATA ##########
+    with open(corpus, 'r', encoding='utf8') as f:
+        corpus_data = f.read().split()
 
-data = []
-for word in corpus_data:
-    if word in embeddings.keys():
-        data.append(np.array(embeddings[word]).T)
-        #TODO: pos_tag corpus_data, append to eatch data element
-
-data = np.array(data)
-print(data[0])
-print(data[0].shape)
-#print(embeddings[:5])
-print(data[:5])
-
-ground_truth = data.copy()
-ground_truth = ground_truth[1:-1]
-
-########## LOAD MODEL ##########
-
-model = rnn(128)
-print(model.summary())
-
-########## CALLBACKS ##########
+    data = []
+    for word in corpus_data:
+        if word in embeddings.keys():
+            data.append(np.array(embeddings[word]).T)
+            # TODO: pos_tag corpus_data, append to eatch data element
 
 
-########## TRAIN ##########
+    # TODO: split data into separate sentences?
+    data = np.array(data)
+    ground_truth = data.copy()
+    pre_ground_truth = ground_truth [:,0:ground_truth.shape[1]-1,:]
+    post_ground_truth = ground_truth [:,1:ground_truth.shape[1],:]
 
-#TODO: specify what Y should be
-#TODO: determine proper shapes for output
-model.fit(data[:-2], ground_truth[:,:,0],
-        batch_size=128,
-        epochs=1,
-        callbacks=[ModelCheckpoint('weights.hdf5', monitor='acc', verbose=0)])
 
-test = np.random.rand(1,128,1)
-print(test)
-print(model.predict(test))
+    ########## LOAD MODEL ##########
+
+    learning_rate = 1e-4
+
+    model, encoder_model, decoder_model = rnn(embedding_size=1024,
+                                              recurrent_dropout=0,
+                                              single_timestep_elements=data[0].shape[-1],
+                                              single_timestep_gt=ground_truth[0].shape[-1],
+                                              learning_rate=learning_rate)
+    print(model.summary())
+
+    ########## CALLBACKS ##########
+
+    ########## TRAIN ##########
+
+    BATCH_SIZE = 2**6
+    NUM_EPOCHS = 10000
+
+    try:
+        model.fit([data, pre_ground_truth], post_ground_truth,
+                  batch_size=BATCH_SIZE,
+                  epochs=NUM_EPOCHS,)
+
+    except KeyboardInterrupt:
+        encoder_model.save(ENCODER_MODEL)
+        decoder_model.save(DECODER_MODEL)
