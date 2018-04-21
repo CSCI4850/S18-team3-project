@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     ########## LOAD MODEL ##########
 
-    learning_rate = 1e-5
+    learning_rate = 1e-3
 
     model, encoder_model, decoder_model = rnn(embedding_size=64,
                                               recurrent_dropout=0,

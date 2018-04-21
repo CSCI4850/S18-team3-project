@@ -50,7 +50,7 @@ def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt
     model = Model([encoder_input, decoder_input], decoder_output)
 
     model.compile(optimizer=Adam(lr=learning_rate),
-                  loss='cosine')
+                  loss='mean_squared_error')
 
     encoder_model = Model(encoder_input, [encoder_state_h, encoder_state_c])
 

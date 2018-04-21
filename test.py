@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     ########## LOAD MODEL ##########
 
-    loss = 'cosine'
+    loss = 'mean_squared_error'
 
     encoder_model = load_model(ENCODER_MODEL)
     encoder_model.compile(optimizer='Adam', loss=loss)
