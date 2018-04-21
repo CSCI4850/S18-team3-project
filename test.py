@@ -28,7 +28,8 @@ def closest(dictionary, vec):
         if d < min_dist:
             min_dist = d
             closest = key
-    return closest 
+            closest_vec = val
+    return closest, np.array(closest_vec)
 
 if __name__ == '__main__':
 
@@ -72,12 +73,19 @@ if __name__ == '__main__':
     num_words = 10
     for _ in tqdm(range(num_words)):
         out, h, c = decoder_model.predict([token]+context)
-        token = out
         context = [h, c]
 
         print("Prediction min: {:.4f}".format(np.min(out)))
         print("Prediction max: {:.4f}".format(np.max(out)))
-        words.append(closest(embeddings, out[0,:,0]))
+
+        # snap the network's prediction to the closest real word, and also
+        # snap the network's prediction to the closest vector in our space
+        # so that it predicts with real words as previous values
+        closest_word, closest_vec = closest(embeddings, out[0,:,0])
+        token = np.zeros(shape=out.shape)
+        token[0,:,0] = closest_vec
+
+        words.append(closest_word)
 
     # print to console
     for word in words:

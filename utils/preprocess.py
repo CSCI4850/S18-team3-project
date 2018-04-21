@@ -5,6 +5,7 @@ Run this file from the root directory!!!
 
 import os
 import cleaner
+from tqdm import tqdm
 import word2vec
 import obtain_data
 
@@ -21,8 +22,8 @@ if __name__ == "__main__":
 
     # first download all files into data
     print("***** DOWNLOADING *****")
-    THRESHOLD = 1 # TODO: this is temporary
-    if len(os.listdir(DATA_DIR)) <= THRESHOLD:
+    THRESHOLD = 4 
+    if len(os.listdir(DATA_DIR)) < THRESHOLD:
         obtain_data.get_south_park()
         print("Done South Park")
         obtain_data.get_rick_and_morty()
@@ -37,9 +38,12 @@ if __name__ == "__main__":
 
     print(filenames)
 
+    cleaned_file_paths = []
+
     for filename in filenames:
         src = filename
         dst = os.path.join(CLEAN_DIR, os.path.basename(filename))
+        cleaned_file_paths.append(dst)
 
         args = ['tmp', src, dst]
 
@@ -47,7 +51,14 @@ if __name__ == "__main__":
             cleaner.main(args)
 
     # aggregate into a single file
-    final_data_file = os.path.join(CLEAN_DIR, "final_data.txt")
+    print("***** AGGREGATING *****")
+    final_data_file = os.path.join(CLEAN_DIR, "all_data.txt")
+    with open(final_data_file, 'w', encoding='utf8') as all_data_file:
+        for clean_file in tqdm(cleaned_file_paths):
+            with open(clean_file, 'r', encoding='utf8') as individual_data_file:
+                lines = individual_data_file.readlines()
+                all_data_file.writelines(lines)
+
 
     # create word embeddings
     print("***** EMBEDDING *****")
