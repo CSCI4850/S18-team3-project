@@ -17,7 +17,7 @@ if __name__ == '__main__':
     EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.pkl")
     ENCODER_MODEL = os.path.join("models", "encoder_model.hdf5")
     DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
-    corpus = os.path.join(DATA_DIR, "all_data.txt")
+    corpus = os.path.join(DATA_DIR, "rick_and_morty.txt")
 
     ########## IMPORT DATA ##########
     embeddings = recall_mapping(EMBEDDING_FILE)
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     ########## LOAD MODEL ##########
 
-    learning_rate = 1e-4
+    learning_rate = 1e-5
 
     model, encoder_model, decoder_model = rnn(embedding_size=64,
                                               recurrent_dropout=0,
@@ -56,8 +56,8 @@ if __name__ == '__main__':
 
     ########## TRAIN ##########
 
-    BATCH_SIZE = 2**6
-    NUM_EPOCHS = 1
+    BATCH_SIZE = 2**8
+    NUM_EPOCHS = 200
 
     try:
         model.fit([data, pre_ground_truth], post_ground_truth,

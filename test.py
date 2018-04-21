@@ -62,8 +62,9 @@ if __name__ == '__main__':
     token = np.array(token)
     token = np.reshape(token, token.shape + (1,))
 
-    print("Start token min: {:.4f}".format(np.min(token)))
-    print("Start token max: {:.4f}".format(np.max(token)))
+    print("Start token min: {:.4f}".format(np.min(token[0,:,0])))
+    print("Start token med: {:.4f}".format(np.median(token[0,:,0])))
+    print("Start token max: {:.4f}".format(np.max(token[0,:,0])))
 
     context = encoder_model.predict(token)
     words = []
@@ -75,8 +76,6 @@ if __name__ == '__main__':
         out, h, c = decoder_model.predict([token]+context)
         context = [h, c]
 
-        print("Prediction min: {:.4f}".format(np.min(out)))
-        print("Prediction max: {:.4f}".format(np.max(out)))
 
         # snap the network's prediction to the closest real word, and also
         # snap the network's prediction to the closest vector in our space
@@ -84,6 +83,10 @@ if __name__ == '__main__':
         closest_word, closest_vec = closest(embeddings, out[0,:,0])
         token = np.zeros(shape=out.shape)
         token[0,:,0] = closest_vec
+
+        print("Prediction min: {:.4f}".format(np.min(token)))
+        print("Start token med: {:.4f}".format(np.median(token)))
+        print("Prediction max: {:.4f}".format(np.max(token)))
 
         words.append(closest_word)
 
