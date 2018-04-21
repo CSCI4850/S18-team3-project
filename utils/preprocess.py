@@ -53,17 +53,19 @@ if __name__ == "__main__":
     # aggregate into a single file
     print("***** AGGREGATING *****")
     final_data_file = os.path.join(CLEAN_DIR, "all_data.txt")
-    with open(final_data_file, 'w', encoding='utf8') as all_data_file:
-        for clean_file in tqdm(cleaned_file_paths):
-            with open(clean_file, 'r', encoding='utf8') as individual_data_file:
-                lines = individual_data_file.readlines()
-                all_data_file.writelines(lines)
+
+    if not os.path.exists(final_data_file):
+        with open(final_data_file, 'w', encoding='utf8') as all_data_file:
+            for clean_file in tqdm(cleaned_file_paths):
+                with open(clean_file, 'r', encoding='utf8') as individual_data_file:
+                    lines = individual_data_file.readlines()
+                    all_data_file.writelines(lines)
 
 
     # create word embeddings
     print("***** EMBEDDING *****")
     if not os.path.exists(OUTPUT_DICTIONARY_FILE):
-        word2vec.main(CLEAN_DIR, OUTPUT_DICTIONARY_FILE)
+        word2vec.main(final_data_file, OUTPUT_DICTIONARY_FILE)
 
     print("***** DONE *****")
 

@@ -36,22 +36,6 @@ def read_data(filename):
 
         data = list(itertools.chain.from_iterable(lines))
 
-        '''
-        for word in lines:
-            tokdata.append(word_tokenize(i))
-        
-
-        nontok_data = [word for line in f for word in line.split()]
-        tokdata = [word_tokenize(i) for i in nontok_data]
-        data = []
-	# tokdata holds the tokenized data
-	# using nltk's word_tokenize() function returns list of word(s), so can't will
-        # become ['can', 't'] -- so the lines below simply run through tokdata, which is
-        # a list of lists, and appends all words into one big list, instead of having
-        # lists inside of lists
-        for wordList in tokdata:
-            data += wordList
-        '''
     return data
 
 
@@ -177,17 +161,11 @@ def build_dataset(words, n_words):
 
 
 def main(path, output_dictionary_file):
-    #Entire, non-unique vocabulary
-    #path = os.path.join("..", "data", "train", "cleaned")
-    vocab = []
-    #iterates through every file in the given directory and calls read_data on each file
-    print("*** Adding vocab ***")
-    for filename in tqdm(os.listdir(path)):
-        if 'all_data' in filename:
-            continue
-        vocab += read_data(os.path.join(path, filename))
 
-    #vocab = read_data('../data/train/cleandata.txt')
+    print("*** Adding vocab from {} ***".format(path))
+
+    vocab = read_data((path))
+
     vocabsize = len(vocab)
 
 
@@ -315,7 +293,7 @@ def main(path, output_dictionary_file):
                     for k in xrange(top_k):
                         close_word = revdictionary[nearest[k]]
                         log_str = "%s %s," % (log_str, close_word)
-                    print(log_str)
+                    #print(log_str)
         final_embeddings = normalized_embeddings.eval() #Saves embeddings for use in other tensors
         #np.savetxt('final_embedding_dic.txt', final_embeddings)
 
@@ -350,5 +328,8 @@ def main(path, output_dictionary_file):
     '''
 
 if __name__ == '__main__':
-    path = os.path.join("..", "data", "train", "cleaned")
-    main(path, "embedPlusPos.hdf5")
+    path = os.path.join("..", "data", "train", "cleaned","all_data.txt")
+    if os.path.exists(path):
+        main(path, "embedPlusPos.hdf5")
+    else:
+        print("First download all the data; please run preprocess.py instead of this file")
