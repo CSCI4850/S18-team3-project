@@ -9,6 +9,7 @@ import json
 from tqdm import tqdm
 from keras.models import load_model
 from keras.models import model_from_json 
+from keras import backend as K
 from utils.word2vec import recall_mapping
 
 def dist(x,y):
@@ -45,7 +46,7 @@ if __name__ == '__main__':
 
     ########## LOAD MODEL ##########
 
-    loss = 'mean_squared_error'
+    loss = 'cosine'
 
     encoder_model = load_model(ENCODER_MODEL)
     encoder_model.compile(optimizer='Adam', loss=loss)
@@ -90,6 +91,11 @@ if __name__ == '__main__':
 
         words.append(closest_word)
 
+        # update context with new token
+        context = encoder_model.predict(token)
+
     # print to console
     for word in words:
         print(word)
+
+    K.clear_session()

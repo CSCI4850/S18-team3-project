@@ -25,7 +25,7 @@ def rnn(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_
 
     return model
 
-def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_dropout=0, learning_rate=1e-4):
+def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_dropout=0, learning_rate=1e-4, loss='cosine'):
 
     encoder_input = Input(shape=(None, single_timestep_elements))
     encoder_hidden_dense = Dense(256)(encoder_input)
@@ -50,7 +50,7 @@ def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt
     model = Model([encoder_input, decoder_input], decoder_output)
 
     model.compile(optimizer=Adam(lr=learning_rate),
-                  loss='mean_squared_error')
+                  loss=loss)
 
     encoder_model = Model(encoder_input, [encoder_state_h, encoder_state_c])
 

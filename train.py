@@ -49,7 +49,8 @@ if __name__ == '__main__':
                                               recurrent_dropout=0,
                                               single_timestep_elements=data[0].shape[-1],
                                               single_timestep_gt=ground_truth[0].shape[-1],
-                                              learning_rate=learning_rate)
+                                              learning_rate=learning_rate,
+                                              loss='cosine')
     print(model.summary())
 
     ########## CALLBACKS ##########
