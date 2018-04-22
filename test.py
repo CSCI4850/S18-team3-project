@@ -41,7 +41,7 @@ if __name__ == '__main__':
     DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
     RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
 
-    teacher_forcing = True 
+    teacher_forcing = False 
 
     ########## IMPORT DATA ##########
     embeddings = recall_mapping(EMBEDDING_FILE)
@@ -71,17 +71,17 @@ if __name__ == '__main__':
     token = np.array(token)
     token = np.reshape(token, token.shape + (1,))
 
-    print("Start token min: {:.4f}".format(np.min(token[0,:,0])))
-    print("Start token med: {:.4f}".format(np.median(token[0,:,0])))
-    print("Start token max: {:.4f}".format(np.max(token[0,:,0])))
+    #print("Start token min: {:.4f}".format(np.min(token[0,:,0])))
+    #print("Start token med: {:.4f}".format(np.median(token[0,:,0])))
+    #print("Start token max: {:.4f}".format(np.max(token[0,:,0])))
 
+    num_words = 50
     if teacher_forcing:
         context = encoder_model.predict(token)
         words = []
         words.append('ST')
 
         # generate words
-        num_words = 10
         for _ in tqdm(range(num_words)):
             out, h, c = decoder_model.predict([token]+context)
             context = [h, c]
@@ -91,12 +91,13 @@ if __name__ == '__main__':
             # snap the network's prediction to the closest vector in our space
             # so that it predicts with real words as previous values
             closest_word, closest_vec = closest(embeddings, out[0,:,0])
+
             token = np.zeros(shape=out.shape)
             token[0,:,0] = closest_vec
 
-            print("Prediction min: {:.4f}".format(np.min(token)))
-            print("Start token med: {:.4f}".format(np.median(token)))
-            print("Prediction max: {:.4f}".format(np.max(token)))
+            #print("Prediction min: {:.4f}".format(np.min(token)))
+            #print("Start token med: {:.4f}".format(np.median(token)))
+            #print("Prediction max: {:.4f}".format(np.max(token)))
 
             words.append(closest_word)
 
@@ -108,7 +109,6 @@ if __name__ == '__main__':
         words.append('ST')
 
         # generate words
-        num_words = 10
         for _ in tqdm(range(num_words)):
             out = model.predict(token)
 
@@ -120,9 +120,9 @@ if __name__ == '__main__':
             token = np.zeros(shape=out.shape)
             token[0,:,0] = closest_vec
 
-            print("Prediction min: {:.4f}".format(np.min(token)))
-            print("Start token med: {:.4f}".format(np.median(token)))
-            print("Prediction max: {:.4f}".format(np.max(token)))
+            #print("Prediction min: {:.4f}".format(np.min(token)))
+            #print("Start token med: {:.4f}".format(np.median(token)))
+            #print("Prediction max: {:.4f}".format(np.max(token)))
 
             words.append(closest_word)
 

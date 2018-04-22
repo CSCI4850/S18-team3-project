@@ -23,7 +23,7 @@ if __name__ == '__main__':
     #corpus = os.path.join(DATA_DIR, "rick_and_morty.txt")
     corpus = os.path.join(DATA_DIR, "simple.txt")
 
-    teacher_forcing = True 
+    teacher_forcing = False 
 
     ########## IMPORT DATA ##########
     embeddings = recall_mapping(EMBEDDING_FILE)
@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
 
     if teacher_forcing:
-        model, encoder_model, decoder_model = encoder_decoder(embedding_size=128,
+        model, encoder_model, decoder_model = encoder_decoder(embedding_size=512,
                                                               recurrent_dropout=0,
                                                               single_timestep_elements=data[0].shape[-1],
                                                               single_timestep_gt=ground_truth[0].shape[-1],
@@ -69,7 +69,7 @@ if __name__ == '__main__':
                                                               loss='cosine')
     else:
         model = rnn(embedding_size=256,
-                  recurrent_dropout=0.2,
+                  recurrent_dropout=0,
                   single_timestep_elements=data[0].shape[-1],
                   single_timestep_gt=ground_truth[0].shape[-1],
                   learning_rate=learning_rate)
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     ########## TRAIN ##########
 
 
-    NUM_EPOCHS = 10000
+    NUM_EPOCHS = 5000
     try:
         if teacher_forcing:
             BATCH_SIZE = 2**8
