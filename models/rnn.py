@@ -10,18 +10,18 @@ import numpy as np
 def rnn(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_dropout=0, learning_rate=1e-4):
     inputs = Input(shape=(None, single_timestep_elements))
 
-    x = LSTM(50, name='a')(inputs)
-    x = LSTM(150, return_sequences=False, stateful=False, name='b')(x)
+    x = LSTM(50, return_sequences=True, name='a')(inputs)
+    x = LSTM(150, return_sequences=True, stateful=False, name='b')(x)
     x = Dropout(0.2)(x)
-    x = LSTM(200, return_sequences=False, stateful=False, name='c')(x)
+    x = LSTM(200, return_sequences=True, stateful=False, name='c')(x)
     x = Dropout(0.2)(x)
-    x = LSTM(32, return_sequences=False, stateful=False, name='d')(x)
-    x = Dense(single_timestep_gt, activation='sigmoid')(x)
+    x = LSTM(32, return_sequences=True, stateful=False, name='d')(x)
+    x = Dense(single_timestep_gt, activation='tanh')(x)
+    x = Dense(single_timestep_gt, activation='linear')(x)
 
     model = Model(inputs, x)
     model.compile(loss='mean_squared_error',
-                optimizer=Adam(lr=learning_rate),
-                metrics=['accuracy'])
+                optimizer=Adam(lr=learning_rate),)
 
     return model
 
@@ -43,7 +43,7 @@ def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt
                                                             return_state=True)(decoder_hidden_dense, initial_state=[encoder_state_h, encoder_state_c])
     decoder_output = LeakyReLU()(decoder_output)
     decoder_output = Dense(256,activation='tanh')(decoder_output)
-    decoder_output = Dense(256,activation='tanh')(decoder_output)
+    #decoder_output = Dense(256,activation='tanh')(decoder_output)
     decoder_output = Dense(single_timestep_gt,activation='tanh')(decoder_output)
 
 
@@ -67,7 +67,7 @@ def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt
                                 initial_state=[decoder_state_input_h, decoder_state_input_c])
     decoder_output = LeakyReLU()(decoder_output)
     decoder_output = Dense(256,activation='tanh')(decoder_output)
-    decoder_output = Dense(256,activation='tanh')(decoder_output)
+    #decoder_output = Dense(256,activation='tanh')(decoder_output)
     decoder_output = Dense(single_timestep_gt, activation='tanh')(decoder_output)
 
     decoder_model = Model([decoder_input] + [decoder_state_input_h, decoder_state_input_c],
