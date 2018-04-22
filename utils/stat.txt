@@ -1,15 +1,4 @@
-cleanSouthPark.txt
-Total number of words in corpus: 1430968
-Total number of unique words: 27045
-Outlier count: 6791
-
-cleanSimpsons.txt
-Total number of words in corpus: 1647971
-Total number of unique words: 38290
-Outlier count: 8391
-
-cleanRM.txt
-Total number of words in corpus: 83946
-Total number of unique words: 3569
-Outlier count: 1136
+Total number of words in corpus: 649
+Total number of unique words: 220
+Outlier count: 21
 

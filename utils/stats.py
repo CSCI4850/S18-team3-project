@@ -52,33 +52,35 @@ def build_dataset(words, n_words):
 if __name__ == '__main__':
 
     #all files in ../data/train/cleaned will be looped through and their stats will be found in stat.txt
-    path = os.path.join("..", "data", "train", "cleaned")
+    #path = os.path.join("..", "data", "train", "cleaned")
+    
     vocab = []
-
+    vocab = read_data("../data/train/cleaned/simple.txt")
+ #   path = os.path.join("..", "data", "train", "cleaned", "simple.txt")
     uniqueVocab = open("stat.txt", "w")
     #writes statistics to stat.txt
     #Stats: total words in corpus, total unique words, and count of outlier words
-    for filename in os.listdir(path):
-        indVocab = []
-        indVocab = read_data(os.path.join(path, filename))
-        vocab += read_data(os.path.join(path, filename))
-        vocabsize = len(indVocab)
-        data, count, dictionary, revdictionary = build_dataset(indVocab, vocabsize);
+
+#    for filename in os.listdir(path):
+#        indVocab = []
+#        indVocab = read_data(os.path.join(path, filename))
+#        vocab += read_data(os.path.join(path, filename))
+    vocabsize = len(vocab)
+    data, count, dictionary, revdictionary = build_dataset(vocab, vocabsize);
         
         #if word occurs less than 5 times, count it as an outlier
-        outlierCount = 0
-        for item in tqdm(count):
-            if item[1] > 5:
-                outlierCount += 1
+    outlierCount = 0
+    for item in tqdm(count):
+       if item[1] > 5:
+           outlierCount += 1
 
-        uniqueVocab.write(filename + '\n')
-        uniqueVocab.write("Total number of words in corpus: ")
-        uniqueVocab.write(str(vocabsize) + '\n')
-        uniqueSet = set(indVocab)
-        uniqueVocab.write("Total number of unique words: ")
-        uniqueVocab.write(str(len(uniqueSet)) + '\n')
-        uniqueVocab.write("Outlier count: ")
-        uniqueVocab.write(str(outlierCount) + '\n' + '\n')
+    uniqueVocab.write("Total number of words in corpus: ")
+    uniqueVocab.write(str(vocabsize) + '\n')
+    uniqueSet = set(vocab)
+    uniqueVocab.write("Total number of unique words: ")
+    uniqueVocab.write(str(len(uniqueSet)) + '\n')
+    uniqueVocab.write("Outlier count: ")
+    uniqueVocab.write(str(outlierCount) + '\n' + '\n')
         #for un in uniqueSet:
         #    uniqueVocab.write(un + '\n')
     uniqueVocab.close()

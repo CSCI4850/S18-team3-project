@@ -14,9 +14,9 @@ def read_data(filename):
     return data
 
 text = []
-path = os.path.join("..", "data", "train", "cleaned")
-for filename in os.listdir(path):
-    text += read_data(os.path.join(path, filename))
+#path = os.path.join("..", "data", "train", "cleaned")
+#for filename in os.listdir(path):
+text += read_data("../data/train/cleaned/simple.txt")
 
 def make_pairs(corpus):
     for i in range(len(corpus)-1):
