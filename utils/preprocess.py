@@ -52,7 +52,8 @@ if __name__ == "__main__":
 
     # aggregate into a single file
     print("***** AGGREGATING *****")
-    final_data_file = os.path.join(CLEAN_DIR, "all_data.txt")
+    #final_data_file = os.path.join(CLEAN_DIR, "all_data.txt")
+    final_data_file = os.path.join(CLEAN_DIR, "simple.txt")
 
     if not os.path.exists(final_data_file):
         with open(final_data_file, 'w', encoding='utf8') as all_data_file:

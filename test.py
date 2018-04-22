@@ -41,7 +41,7 @@ if __name__ == '__main__':
     DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
     RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
 
-    teacher_forcing = False
+    teacher_forcing = True 
 
     ########## IMPORT DATA ##########
     embeddings = recall_mapping(EMBEDDING_FILE)
@@ -50,8 +50,8 @@ if __name__ == '__main__':
     ########## LOAD MODEL ##########
 
     if teacher_forcing:
-        loss = 'cosine'
 
+        loss = 'cosine'
         encoder_model = load_model(ENCODER_MODEL)
         encoder_model.compile(optimizer='Adam', loss=loss)
 

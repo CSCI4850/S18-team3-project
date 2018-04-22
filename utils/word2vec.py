@@ -199,7 +199,7 @@ def main(path, output_dictionary_file):
 
     batch, labels = generate_batch(batch_size=8, num_skips=2, skip_window=1, data=data)
     batch_size = 128
-    embedding_size = 128  # Dimension of the embedding vector.
+    embedding_size = 16 # Dimension of the embedding vector.
     skip_window = 1  # How many words to consider left and right.
     num_skips = 2  # How many times to reuse an input to generate a label.
     num_sampled = 64  # Number of negative examples to sample.
