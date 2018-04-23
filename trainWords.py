@@ -45,9 +45,9 @@ if __name__ == '__main__':
 
     save_mapping(MAPPING_FILE, mapping)
         
-    pos_pairs = pos_tag_alt(all_corpus_data, len(unique_words))
+ #   pos_pairs = pos_tag_alt(all_corpus_data, len(unique_words))
 
-    print("Pos length:", len(pos_pairs[0][1]))
+ #   print("Pos length:", len(pos_pairs[0][1]))
 
   #  print(len(mapping['ST'][0]))
   #  print(len(pos_pairs[0][1]))
@@ -57,7 +57,13 @@ if __name__ == '__main__':
     # TODO: figure out how to concatenate part of speech with word embedding
     data = []
     ground_truth = []
-    for i, word in enumerate(corpus_data):
+    for word in corpus_data:
+        data.append(mapping[word][0])
+        ground_truth.append(mapping[word])
+
+
+
+ #   for i, word in enumerate(corpus_data):
         #if word in mapping.keys():
  #       print(len(mapping[word][0]))
  #       print(len(pos_pairs[i][1]))
@@ -66,8 +72,9 @@ if __name__ == '__main__':
         #print(mapping[word][0])
         #mapping[word] is an array of the array of one hot
         #mapping[wprd][0] grabs just that array and that solves this problem
-        data.append(np.concatenate([mapping[word][0],pos_pairs[i][1]]))
-        ground_truth.append(mapping[word])
+    #    data.append(mapping[word][0])
+     #   data.append(np.concatenate([mapping[word][0],pos_pairs[i][1]]))
+    #    ground_truth.append(mapping[word])
     
     '''
     data = []
@@ -82,7 +89,12 @@ if __name__ == '__main__':
     ground_truth = np.array(ground_truth)
 
     num_words = 10
+  #  print(data)
+    print(data.shape[0])
+    print(data.shape[1])
     new_data = np.zeros(shape=(data.shape[0], num_words, data.shape[1]))
+    print("new data")
+    print(new_data.shape)
 
     for i in range(len(data)):
         vec = np.zeros(shape=(num_words, data.shape[1]))
@@ -94,6 +106,11 @@ if __name__ == '__main__':
                 vec[j] = data[k+j]
         #print(vec)
         new_data[i] = vec
+
+    print(data.shape)
+    print("neewest data")
+    print(new_data.shape)
+    print(ground_truth.shape)
 
     data = new_data.copy()
     #ground_truth = new_data.copy()
@@ -204,6 +221,7 @@ if __name__ == '__main__':
                       verbose=0,
                       callbacks=callbacks)
             model.save(RNN_MODEL)
+            
             plt.figure(1)
             plt.subplot(211)
             plt.plot(history.history['acc'])
@@ -216,7 +234,7 @@ if __name__ == '__main__':
             plt.ylabel('loss')
             plt.xlabel('epoch')
             plt.tight_layout()
-            plt.savefig('curves_with_pos.png')
+            plt.savefig('curves_without_pos.png')
 
         K.clear_session()
 

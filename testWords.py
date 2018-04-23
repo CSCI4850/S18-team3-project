@@ -80,7 +80,9 @@ if __name__ == '__main__':
 
     tmp = np.zeros(shape=(1,1,291))
     tmp[0,0,:len(token[0,0])] = token[0,0,:]
-    token = tmp
+    word = np.zeros(shape=(1, 1, 244))
+    word[0,0:len(token[0,0])] = token[0,0,:]
+    token = word
     #padding = 291 - token.shape[-1]
     #token[0,0,:] = np.pad(token[0,0,:], (0, padding), 'constant')
     noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
@@ -143,11 +145,11 @@ if __name__ == '__main__':
 
 
             # fix shapes
-            tmp = np.zeros(shape=(1,1,291))
+            tmp = np.zeros(shape=(1,1,244))
             tmp[0,0,:len(out[0,0])] = out[0,0,:]
             out = tmp
 
-            tmp = np.zeros(shape=(1,1,291))
+            tmp = np.zeros(shape=(1,1,244))
             tmp[0,0,:len(token[0,0])] = token[0,0,:]
             token = tmp
 
@@ -159,7 +161,7 @@ if __name__ == '__main__':
                 en_count += 1
 
     # write the output to a file
-    with open("pos_output.txt", 'w', encoding='utf8') as f:
+    with open("no_pos_output.txt", 'w', encoding='utf8') as f:
         for word in words:
             f.write(word)
             if word == "EN":
