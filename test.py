@@ -71,13 +71,23 @@ if __name__ == '__main__':
     print("**** Generating Sentences ****")
 
     # set up start token
-    #token = mapping['ST']
-    token = embeddings['ST']
+    token = mapping['ST']
+    #token = embeddings['ST']
     token = np.array(token)
     token = np.reshape(token, (1,) + token.shape)
-    padding = 291 - token.shape[-1]
-    token = np.pad(token, (0, padding), 'constant')
+
+    #print(token.shape)
+
+    tmp = np.zeros(shape=(1,1,291))
+    tmp[0,0,:len(token[0,0])] = token[0,0,:]
+    token = tmp
+    #padding = 291 - token.shape[-1]
+    #token[0,0,:] = np.pad(token[0,0,:], (0, padding), 'constant')
     noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
+
+
+    print(token.shape)
+    print(noise.shape)
 
     #print("Start token min: {:.4f}".format(np.min(token[0,:,0])))
     #print("Start token med: {:.4f}".format(np.median(token[0,:,0])))
@@ -97,8 +107,8 @@ if __name__ == '__main__':
             # snap the network's prediction to the closest real word, and also
             # snap the network's prediction to the closest vector in our space
             # so that it predicts with real words as previous values
-            #closest_word, closest_vec = closest(mapping, out[0,0,:])
-            closest_word, closest_vec = closest(embeddings, out[0,0,:])
+            closest_word, closest_vec = closest(mapping, out[0,0,:])
+            #closest_word, closest_vec = closest(embeddings, out[0,0,:])
 
             token = np.zeros(shape=out.shape)
             token[0,0,:] = closest_vec
@@ -121,21 +131,30 @@ if __name__ == '__main__':
         # generate words
         while en_count <= 50:
             out = model.predict([token, noise])
-            print(out.shape)
+
             # snap the network's prediction to the closest real word, and also
             # snap the network's prediction to the closest vector in our space
             # so that it predicts with real words as previous values
-            #closest_word, closest_vec = closest(mapping, out[0,0,:])
-            closest_word, closest_vec = closest(embeddings, out[0,0,:])
+            closest_word, closest_vec = closest(mapping, out[0,0,:])
+            #closest_word, closest_vec = closest(embeddings, out[0,0,:])
             token = np.zeros(shape=out.shape)
             token[0,0,:] = closest_vec
+            #token = np.pad(token, (0, padding), 'constant')
+
+
+            # fix shapes
+            tmp = np.zeros(shape=(1,1,291))
+            tmp[0,0,:len(out[0,0])] = out[0,0,:]
+            out = tmp
+
+            tmp = np.zeros(shape=(1,1,291))
+            tmp[0,0,:len(token[0,0])] = token[0,0,:]
+            token = tmp
+
             noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
 
-            #print("Prediction min: {:.4f}".format(np.min(token)))
-            #print("Start token med: {:.4f}".format(np.median(token)))
-            #print("Prediction max: {:.4f}".format(np.max(token)))
-
             words.append(closest_word)
+
             if closest_word == "EN":
                 en_count += 1
 

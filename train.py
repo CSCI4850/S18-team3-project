@@ -47,6 +47,8 @@ if __name__ == '__main__':
         
     pos_pairs = pos_tag_alt(all_corpus_data, len(unique_words))
 
+    print("Pos length:", len(pos_pairs[0][1]))
+
   #  print(len(mapping['ST'][0]))
   #  print(len(pos_pairs[0][1]))
  #   print(mapping['ST'][0])
@@ -54,6 +56,7 @@ if __name__ == '__main__':
 
     # TODO: figure out how to concatenate part of speech with word embedding
     data = []
+    ground_truth = []
     for i, word in enumerate(corpus_data):
         #if word in mapping.keys():
  #       print(len(mapping[word][0]))
@@ -64,6 +67,7 @@ if __name__ == '__main__':
         #mapping[word] is an array of the array of one hot
         #mapping[wprd][0] grabs just that array and that solves this problem
         data.append(np.concatenate([mapping[word][0],pos_pairs[i][1]]))
+        ground_truth.append(mapping[word])
     
     '''
     data = []
@@ -74,10 +78,8 @@ if __name__ == '__main__':
 
 
     data = np.array(data)
-    ground_truth = data.copy()
-
-    print(data.shape)
-
+    #ground_truth = data.copy()
+    ground_truth = np.array(ground_truth)
 
     num_words = 10
   #  print(data)
@@ -104,7 +106,9 @@ if __name__ == '__main__':
     print(ground_truth.shape)
 
     data = new_data.copy()
-    ground_truth = new_data.copy()
+    #ground_truth = new_data.copy()
+    #ground_truth = [x[0][:len(pos_pairs[0][1])] for x in ground_truth]
+    #ground_truth = np.array(ground_truth)
 
     noise = np.random.rand(data.shape[0],data.shape[1],  data.shape[2])
     noise /= 10 # small amount of noise
@@ -152,8 +156,7 @@ if __name__ == '__main__':
                 axis=1)
     print(data.shape)
     print(post_ground_truth.shape)
-
-
+    print(noise.shape)
 
 
     ########## LOAD MODEL ##########
