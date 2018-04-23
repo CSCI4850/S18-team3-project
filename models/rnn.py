@@ -6,6 +6,9 @@ import keras.backend as K
 from keras import losses 
 from tensorflow import float16
 import numpy as np
+#from IPython.display import display
+#from IPython.display import SVG
+#from keras.utils.vis_utils import model_to_dot
 
 def rnn(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_dropout=0, learning_rate=1e-4, loss='mean_squared_error'):
     inputs = Input(shape=(None, single_timestep_elements))
@@ -27,8 +30,9 @@ def rnn(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_
 
     model = Model([inputs, noise], x)
     model.compile(loss=loss,
-                optimizer=Adam(lr=learning_rate),)
-
+                optimizer=Adam(lr=learning_rate),
+                metrics = ['accuracy'])
+ #   SVG(model_to_dot(model).create(prog ='dot', format='svg'))
     return model
 
 def encoder_decoder(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_dropout=0, learning_rate=1e-4, loss='cosine'):
