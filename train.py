@@ -200,7 +200,7 @@ if __name__ == '__main__':
             decoder_model.save(DECODER_MODEL)
         else:
             BATCH_SIZE = 2**10
-            model.fit([data, noise], post_ground_truth,
+            history = model.fit([data, noise], post_ground_truth,
                       batch_size=BATCH_SIZE,
                       epochs=NUM_EPOCHS,
                       verbose=0,
