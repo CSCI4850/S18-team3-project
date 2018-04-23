@@ -84,7 +84,7 @@ if __name__ == '__main__':
     #padding = 291 - token.shape[-1]
     #token[0,0,:] = np.pad(token[0,0,:], (0, padding), 'constant')
     noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
-
+    noise /= 10 #small amount of noise
 
     print(token.shape)
     print(noise.shape)
