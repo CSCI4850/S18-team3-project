@@ -75,7 +75,8 @@ if __name__ == '__main__':
     token = embeddings['ST']
     token = np.array(token)
     token = np.reshape(token, (1,) + token.shape)
-
+    padding = 291 - token.shape[-1]
+    token = np.pad(token, (0, padding), 'constant')
     noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
 
     #print("Start token min: {:.4f}".format(np.min(token[0,:,0])))
@@ -120,7 +121,7 @@ if __name__ == '__main__':
         # generate words
         while en_count <= 50:
             out = model.predict([token, noise])
-
+            print(out.shape)
             # snap the network's prediction to the closest real word, and also
             # snap the network's prediction to the closest vector in our space
             # so that it predicts with real words as previous values

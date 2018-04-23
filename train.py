@@ -45,17 +45,25 @@ if __name__ == '__main__':
 
     save_mapping(MAPPING_FILE, mapping)
         
-    pos_pairs = pos_tag_alt(all_corpus_data)
+    pos_pairs = pos_tag_alt(all_corpus_data, len(unique_words))
 
-    print(len(mapping['ST'][0]))
-    print(len(pos_pairs[0][1]))
-
+  #  print(len(mapping['ST'][0]))
+  #  print(len(pos_pairs[0][1]))
+ #   print(mapping['ST'][0])
+ #   print(pos_pairs[0][1])
 
     # TODO: figure out how to concatenate part of speech with word embedding
     data = []
     for i, word in enumerate(corpus_data):
         #if word in mapping.keys():
-        data.append(np.concatenate([mapping[word],pos_pairs[i][1]]))
+ #       print(len(mapping[word][0]))
+ #       print(len(pos_pairs[i][1]))
+        #print(pos_pairs[i])
+        #print(mapping[word])
+        #print(mapping[word][0])
+        #mapping[word] is an array of the array of one hot
+        #mapping[wprd][0] grabs just that array and that solves this problem
+        data.append(np.concatenate([mapping[word][0],pos_pairs[i][1]]))
     
     '''
     data = []
@@ -72,12 +80,15 @@ if __name__ == '__main__':
 
 
     num_words = 10
-    new_data = np.zeros(shape=(data.shape[0], num_words, data.shape[2]))
-
+  #  print(data)
+    print(data.shape[0])
+    print(data.shape[1])
+    new_data = np.zeros(shape=(data.shape[0], num_words, data.shape[1]))
+    print("new data")
     print(new_data.shape)
 
     for i in range(len(data)):
-        vec = np.zeros(shape=(num_words, data.shape[2]))
+        vec = np.zeros(shape=(num_words, data.shape[1]))
         for j in range(num_words):
             if (i+j+1) < len(data):
                 vec[j] = data[i+j+1]
@@ -88,12 +99,14 @@ if __name__ == '__main__':
         new_data[i] = vec
 
     print(data.shape)
+    print("neewest data")
+    print(new_data.shape)
     print(ground_truth.shape)
 
     data = new_data.copy()
     ground_truth = new_data.copy()
 
-    noise = np.random.rand(data.shape[0], data.shape[1], data.shape[2])
+    noise = np.random.rand(data.shape[0],data.shape[1],  data.shape[2])
     noise /= 10 # small amount of noise
     print(noise.shape)
 
@@ -137,7 +150,6 @@ if __name__ == '__main__':
         post_ground_truth = np.append(ground_truth [:,1:,:], 
                 ground_truth[:,0:1,:],
                 axis=1)
-
     print(data.shape)
     print(post_ground_truth.shape)
 
@@ -158,6 +170,7 @@ if __name__ == '__main__':
                                                               learning_rate=learning_rate,
                                                               loss='categorical_crossentropy')
     else:
+        print(data[0].shape[-1])
         model = rnn(embedding_size=128,
                   recurrent_dropout=0.2,
                   single_timestep_elements=data[0].shape[-1],
