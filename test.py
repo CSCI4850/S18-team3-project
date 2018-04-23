@@ -26,6 +26,7 @@ def closest(dictionary, vec):
         v = np.array(val)[0]
 
         d = dist(v, vec)
+
         if d < min_dist:
             min_dist = d
             closest = key
@@ -37,6 +38,7 @@ if __name__ == '__main__':
     ########## SET DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train", "cleaned")
     EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.pkl")
+    MAPPING_FILE = os.path.join("utils", "mapping.pkl")
     ENCODER_MODEL = os.path.join("models", "encoder_model.hdf5")
     DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
     RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
@@ -45,12 +47,14 @@ if __name__ == '__main__':
 
     ########## IMPORT DATA ##########
     embeddings = recall_mapping(EMBEDDING_FILE)
+    mapping = recall_mapping(MAPPING_FILE)
     print("**** Data Loaded ****")
 
     ########## LOAD MODEL ##########
 
     if teacher_forcing:
 
+        #loss = 'categorical_crossentropy'
         loss = 'cosine'
         encoder_model = load_model(ENCODER_MODEL)
         encoder_model.compile(optimizer='Adam', loss=loss)
@@ -67,39 +71,44 @@ if __name__ == '__main__':
     print("**** Generating Sentences ****")
 
     # set up start token
+    #token = mapping['ST']
     token = embeddings['ST']
     token = np.array(token)
-    token = np.reshape(token, token.shape + (1,))
+    token = np.reshape(token, (1,) + token.shape)
+
+    noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
 
     #print("Start token min: {:.4f}".format(np.min(token[0,:,0])))
     #print("Start token med: {:.4f}".format(np.median(token[0,:,0])))
     #print("Start token max: {:.4f}".format(np.max(token[0,:,0])))
 
-    num_words = 50
+    en_count = 0
     if teacher_forcing:
         context = encoder_model.predict(token)
         words = []
         words.append('ST')
 
         # generate words
-        for _ in tqdm(range(num_words)):
+        while en_count <= 50:
             out, h, c = decoder_model.predict([token]+context)
             context = [h, c]
-
 
             # snap the network's prediction to the closest real word, and also
             # snap the network's prediction to the closest vector in our space
             # so that it predicts with real words as previous values
-            closest_word, closest_vec = closest(embeddings, out[0,:,0])
+            #closest_word, closest_vec = closest(mapping, out[0,0,:])
+            closest_word, closest_vec = closest(embeddings, out[0,0,:])
 
             token = np.zeros(shape=out.shape)
-            token[0,:,0] = closest_vec
+            token[0,0,:] = closest_vec
 
             #print("Prediction min: {:.4f}".format(np.min(token)))
             #print("Start token med: {:.4f}".format(np.median(token)))
             #print("Prediction max: {:.4f}".format(np.max(token)))
 
             words.append(closest_word)
+            if closest_word == "EN":
+                en_count += 1
 
             # update context with new token
             context = encoder_model.predict(token)
@@ -109,27 +118,34 @@ if __name__ == '__main__':
         words.append('ST')
 
         # generate words
-        for _ in tqdm(range(num_words)):
-            out = model.predict(token)
-
+        while en_count <= 50:
+            out = model.predict([token, noise])
 
             # snap the network's prediction to the closest real word, and also
             # snap the network's prediction to the closest vector in our space
             # so that it predicts with real words as previous values
-            closest_word, closest_vec = closest(embeddings, out[0,:,0])
+            #closest_word, closest_vec = closest(mapping, out[0,0,:])
+            closest_word, closest_vec = closest(embeddings, out[0,0,:])
             token = np.zeros(shape=out.shape)
-            token[0,:,0] = closest_vec
+            token[0,0,:] = closest_vec
+            noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
 
             #print("Prediction min: {:.4f}".format(np.min(token)))
             #print("Start token med: {:.4f}".format(np.median(token)))
             #print("Prediction max: {:.4f}".format(np.max(token)))
 
             words.append(closest_word)
+            if closest_word == "EN":
+                en_count += 1
 
     # write the output to a file
     with open("RNN_output.txt", 'w', encoding='utf8') as f:
         for word in words:
-            f.write(word + ' ')
+            f.write(word)
+            if word == "EN":
+                f.write('\n')
+            else:
+                f.write(" ")
     # print to console
     #for word in words:
     #    print(word)

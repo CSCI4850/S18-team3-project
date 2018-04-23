@@ -63,14 +63,15 @@ def pos_tag_alt(text):
             elif (parsed_pos_pair[0] == 'EN'):
                 parsed_pos_pair[1] = '<end>'
             parsed_pos_pair[1] = enumerate_tags()[parsed_pos_pair[1]]
-            parsed_pos_pair[1] = np.pad(parsed_pos_pair[1], (0, 81), 'constant')
-            categorical_token_list.append(parsed_pos_pair[1])
+            #parsed_pos_pair[1] = np.pad(parsed_pos_pair[1], (0, 81), 'constant')
+            categorical_token_list.append(parsed_pos_pair)
     except KeyError:
         pass
+
     return categorical_token_list
 
 
 if __name__ == '__main__':
-    pos_tagging("Testing pos tagger.")
+    print(pos_tag_alt("Testing pos tagger."))
 
     ''' Testing part of speech tagger '''

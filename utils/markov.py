@@ -39,7 +39,7 @@ first_word = np.random.choice(text)
 newSentence = ['ST']
 newSentence.append(first_word)
 #Generates 1000 sequential sentences and writes them to markovSentences.txt
-while(count < 1000):
+while(count < 50):
     if (newSentence):
         newWord = np.random.choice(model[newSentence[-1]])
     if (newWord == 'EN'):
