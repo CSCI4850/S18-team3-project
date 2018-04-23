@@ -13,6 +13,8 @@ from models.rnn import encoder_decoder, rnn
 from utils.word2vec import save_mapping, recall_mapping
 from utils.pos_tagging import pos_tag_alt
 from keras.utils import to_categorical
+import matplotlib.pyplot as plt
+
 
 if __name__ == '__main__':
 
