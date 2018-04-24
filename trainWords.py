@@ -182,8 +182,8 @@ if __name__ == '__main__':
                                                               loss='categorical_crossentropy')
     else:
         print(data[0].shape[-1])
-        model = rnn(embedding_size=128,
-                  recurrent_dropout=0.2,
+        model = rnn(embedding_size=256,
+                  recurrent_dropout=0,
                   single_timestep_elements=data[0].shape[-1],
                   single_timestep_gt=post_ground_truth[0].shape[-1],
                   learning_rate=learning_rate,
@@ -226,14 +226,14 @@ if __name__ == '__main__':
             plt.figure(1)
             plt.subplot(211)
             plt.plot(history.history['acc'])
-            plt.title('model accuracy with part of speech')
-            plt.ylabel('accuracy')
-            plt.xlabel('epoch')
+            plt.title('Model Accuracy without Part of Speech')
+            plt.ylabel('Accuracy')
+            plt.xlabel('Epoch')
             plt.subplot(212)
             plt.plot(history.history['loss'])
-            plt.title('model loss with part of speech')
-            plt.ylabel('loss')
-            plt.xlabel('epoch')
+            plt.title('Model Loss with Part of Speech')
+            plt.ylabel('Loss')
+            plt.xlabel('Epoch')
             plt.tight_layout()
             plt.savefig('curves_without_pos.png')
 
