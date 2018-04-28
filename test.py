@@ -1,5 +1,5 @@
 '''
-Trains the model
+Tests the model
 '''
 
 import numpy as np
@@ -104,9 +104,13 @@ if __name__ == '__main__':
         noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
 
         words.append(closest_word)
+        
 
         if closest_word == "EN":
             en_count += 1
+            print(closest_word)
+        else:
+            print(closest_word, end=' ')
 
     # write the output to a file
     if INCLUDE_POS:
