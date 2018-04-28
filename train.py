@@ -7,10 +7,10 @@ import sys
 import os
 import json
 from keras_tqdm import TQDMCallback
+import pickle
 from tqdm import tqdm
 from keras import backend as K
 from models.rnn import encoder_decoder, rnn
-from utils.word2vec import save_mapping, recall_mapping
 from utils.pos_tagging import pos_tag_alt
 from keras.utils import to_categorical
 import matplotlib.pyplot as plt
@@ -19,10 +19,7 @@ if __name__ == '__main__':
 
     ########## SET DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train", "cleaned")
-    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.pkl")
     MAPPING_FILE = os.path.join("utils", "mapping.pkl")
-    ENCODER_MODEL = os.path.join("models", "encoder_model.hdf5")
-    DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
     RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
     corpus = os.path.join(DATA_DIR, "simple.txt")
 	
@@ -44,7 +41,9 @@ if __name__ == '__main__':
         mapping[word] = to_categorical(i, num_classes=len(unique_words))
         mapping[word] = np.reshape(mapping[word], (1,) + mapping[word].shape)
 
-    save_mapping(MAPPING_FILE, mapping)
+    # save mapping
+    with open(MAPPING_FILE, 'wb') as f:
+        pickle.dump(mapping, f, pickle.HIGHEST_PROTOCOL)
 	
     data = []
     ground_truth = []

@@ -10,7 +10,7 @@ from tqdm import tqdm
 from keras.models import load_model
 from keras.models import model_from_json 
 from keras import backend as K
-from utils.word2vec import recall_mapping
+import pickle
 
 def dist(x,y):
     s = 0
@@ -37,17 +37,14 @@ if __name__ == '__main__':
 
     ########## SET DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train", "cleaned")
-    EMBEDDING_FILE = os.path.join("utils", "embedPlusPos.pkl")
     MAPPING_FILE = os.path.join("utils", "mapping.pkl")
-    ENCODER_MODEL = os.path.join("models", "encoder_model.hdf5")
-    DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
     RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
 
     INCLUDE_POS = True
 
     ########## IMPORT DATA ##########
-    embeddings = recall_mapping(EMBEDDING_FILE)
-    mapping = recall_mapping(MAPPING_FILE)
+    with open(MAPPING_FILE, 'rb') as f:
+        mapping = pickle.load(f)
     print("**** Data Loaded ****")
 
     ########## LOAD MODEL ##########

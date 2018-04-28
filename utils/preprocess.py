@@ -6,8 +6,8 @@ Run this file from the root directory!!!
 import os
 import cleaner
 from tqdm import tqdm
-import word2vec
 import obtain_data
+import random
 
 if __name__ == "__main__":
     ########## DIRECTORIES ##########
@@ -55,8 +55,10 @@ if __name__ == "__main__":
             for clean_file in tqdm(cleaned_file_paths):
                 with open(clean_file, 'r', encoding='utf8') as individual_data_file:
                     lines = individual_data_file.readlines()
-                    # truncate to the first 50 lines
-                    lines = lines[:50]
+                    # truncate to some random 50 lines
+                    start_point = random.randint(0, len(lines))
+                    end_point = start_point + 50
+                    lines = lines[start_point:end_point]
                     all_data_file.writelines(lines)
 
     print("***** DONE *****")

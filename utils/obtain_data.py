@@ -43,5 +43,4 @@ def get_rick_and_morty():
 
 
 if __name__ == "__main__":
-    get_rick_and_morty()
-    print("complete")
+    print("Please do not run this file directly. Instead run utils/preproecess.py from the root directory")

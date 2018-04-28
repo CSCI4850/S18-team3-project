@@ -51,20 +51,13 @@ def build_dataset(words, n_words):
 
 if __name__ == '__main__':
 
-    #all files in ../data/train/cleaned will be looped through and their stats will be found in stat.txt
-    #path = os.path.join("..", "data", "train", "cleaned")
-    
+    data_path = os.path.join("..", "data", "train", "cleaned", "simple.txt")
     vocab = []
-    vocab = read_data("../data/train/cleaned/simple.txt")
- #   path = os.path.join("..", "data", "train", "cleaned", "simple.txt")
+    vocab = read_data(data_path)
     uniqueVocab = open("stat.txt", "w")
     #writes statistics to stat.txt
     #Stats: total words in corpus, total unique words, and count of outlier words
 
-#    for filename in os.listdir(path):
-#        indVocab = []
-#        indVocab = read_data(os.path.join(path, filename))
-#        vocab += read_data(os.path.join(path, filename))
     vocabsize = len(vocab)
     data, count, dictionary, revdictionary = build_dataset(vocab, vocabsize);
         
@@ -81,6 +74,4 @@ if __name__ == '__main__':
     uniqueVocab.write(str(len(uniqueSet)) + '\n')
     uniqueVocab.write("Outlier count: ")
     uniqueVocab.write(str(outlierCount) + '\n' + '\n')
-        #for un in uniqueSet:
-        #    uniqueVocab.write(un + '\n')
     uniqueVocab.close()

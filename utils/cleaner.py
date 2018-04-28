@@ -129,4 +129,4 @@ def main(argv):
         data_out.write(buff)
 
 if __name__ == '__main__':
-    main(sys.argv)
+    print("Please do not run this file directly. Instead run utils/preprocess.py from the root directory.")
