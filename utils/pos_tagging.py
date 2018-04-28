@@ -45,7 +45,7 @@ def pos_tagging(paragraph):
     # returns a tuple of (string: original_word, string: part_of_speech_code)
     return tag_sentences
 
-def pos_tag_alt(text):
+def pos_tag_alt(text, vocabSize):
     '''
     Calculates the part of speech for each word in text.
     Params:
@@ -63,14 +63,16 @@ def pos_tag_alt(text):
             elif (parsed_pos_pair[0] == 'EN'):
                 parsed_pos_pair[1] = '<end>'
             parsed_pos_pair[1] = enumerate_tags()[parsed_pos_pair[1]]
-            parsed_pos_pair[1] = np.pad(parsed_pos_pair[1], (0, 81), 'constant')
-            categorical_token_list.append(parsed_pos_pair[1])
+         #   padding = vocabSize - 47
+         #   parsed_pos_pair[1] = np.pad(parsed_pos_pair[1], (0, padding), 'constant')
+            categorical_token_list.append(parsed_pos_pair)
     except KeyError:
         pass
+
     return categorical_token_list
 
 
 if __name__ == '__main__':
-    pos_tagging("Testing pos tagger.")
+    print(pos_tag_alt("Testing pos tagger.",80))
 
     ''' Testing part of speech tagger '''

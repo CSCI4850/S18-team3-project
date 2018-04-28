@@ -5,30 +5,27 @@ Run this file from the root directory!!!
 
 import os
 import cleaner
-import word2vec
+from tqdm import tqdm
 import obtain_data
+import random
 
 if __name__ == "__main__":
     ########## DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train")
     CLEAN_DIR = os.path.join("data", "train", "cleaned")
+    OUTPUT_DICTIONARY_FILE = os.path.join("utils", "embedPlusPos.pkl")
 
     for d in [DATA_DIR, CLEAN_DIR]:
         if not os.path.exists(d):
             os.makedirs(d)
 
-    OUTPUT_DICTIONARY_FILE = os.path.join("utils", "embedPlusPos.pkl")
 
     # first download all files into data
     print("***** DOWNLOADING *****")
-    THRESHOLD = 1 # TODO: this is temporary
-    if len(os.listdir(DATA_DIR)) <= THRESHOLD:
-        obtain_data.get_south_park()
-        print("Done South Park")
+    THRESHOLD = 2 
+    if len(os.listdir(DATA_DIR)) < THRESHOLD:
         obtain_data.get_rick_and_morty()
         print("Done Rick and Morty")
-        obtain_data.get_simpsons()
-        print("Done Simpsons")
 
     # clean into the clean folder
     print("***** CLEANING *****")
@@ -37,9 +34,12 @@ if __name__ == "__main__":
 
     print(filenames)
 
+    cleaned_file_paths = []
+
     for filename in filenames:
         src = filename
         dst = os.path.join(CLEAN_DIR, os.path.basename(filename))
+        cleaned_file_paths.append(dst)
 
         args = ['tmp', src, dst]
 
@@ -47,12 +47,18 @@ if __name__ == "__main__":
             cleaner.main(args)
 
     # aggregate into a single file
-    final_data_file = os.path.join(CLEAN_DIR, "final_data.txt")
+    print("***** AGGREGATING *****")
+    final_data_file = os.path.join(CLEAN_DIR, "simple.txt")
 
-    # create word embeddings
-    print("***** EMBEDDING *****")
-    if not os.path.exists(OUTPUT_DICTIONARY_FILE):
-        word2vec.main(CLEAN_DIR, OUTPUT_DICTIONARY_FILE)
+    if not os.path.exists(final_data_file):
+        with open(final_data_file, 'w', encoding='utf8') as all_data_file:
+            for clean_file in tqdm(cleaned_file_paths):
+                with open(clean_file, 'r', encoding='utf8') as individual_data_file:
+                    lines = individual_data_file.readlines()
+                    # truncate to some random 50 lines
+                    start_point = random.randint(0, len(lines))
+                    end_point = start_point + 50
+                    lines = lines[start_point:end_point]
+                    all_data_file.writelines(lines)
 
     print("***** DONE *****")
-
