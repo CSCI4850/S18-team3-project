@@ -102,6 +102,7 @@ if __name__ == '__main__':
         token = tmp
 
         noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
+        noise /= 10
 
         words.append(closest_word)
         
