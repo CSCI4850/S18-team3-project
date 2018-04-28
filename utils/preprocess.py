@@ -13,23 +13,19 @@ if __name__ == "__main__":
     ########## DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train")
     CLEAN_DIR = os.path.join("data", "train", "cleaned")
+    OUTPUT_DICTIONARY_FILE = os.path.join("utils", "embedPlusPos.pkl")
 
     for d in [DATA_DIR, CLEAN_DIR]:
         if not os.path.exists(d):
             os.makedirs(d)
 
-    OUTPUT_DICTIONARY_FILE = os.path.join("utils", "embedPlusPos.pkl")
 
     # first download all files into data
     print("***** DOWNLOADING *****")
-    THRESHOLD = 4 
+    THRESHOLD = 2 
     if len(os.listdir(DATA_DIR)) < THRESHOLD:
-        obtain_data.get_south_park()
-        print("Done South Park")
         obtain_data.get_rick_and_morty()
         print("Done Rick and Morty")
-        obtain_data.get_simpsons()
-        print("Done Simpsons")
 
     # clean into the clean folder
     print("***** CLEANING *****")
@@ -52,7 +48,6 @@ if __name__ == "__main__":
 
     # aggregate into a single file
     print("***** AGGREGATING *****")
-    #final_data_file = os.path.join(CLEAN_DIR, "all_data.txt")
     final_data_file = os.path.join(CLEAN_DIR, "simple.txt")
 
     if not os.path.exists(final_data_file):
@@ -60,13 +55,8 @@ if __name__ == "__main__":
             for clean_file in tqdm(cleaned_file_paths):
                 with open(clean_file, 'r', encoding='utf8') as individual_data_file:
                     lines = individual_data_file.readlines()
+                    # truncate to the first 50 lines
+                    lines = lines[:50]
                     all_data_file.writelines(lines)
 
-
-    # create word embeddings
-    print("***** EMBEDDING *****")
-    if not os.path.exists(OUTPUT_DICTIONARY_FILE):
-        word2vec.main(final_data_file, OUTPUT_DICTIONARY_FILE)
-
     print("***** DONE *****")
-

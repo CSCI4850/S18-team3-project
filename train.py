@@ -15,7 +15,6 @@ from utils.pos_tagging import pos_tag_alt
 from keras.utils import to_categorical
 import matplotlib.pyplot as plt
 
-
 if __name__ == '__main__':
 
     ########## SET DIRECTORIES ##########
@@ -26,8 +25,8 @@ if __name__ == '__main__':
     DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
     RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
     corpus = os.path.join(DATA_DIR, "simple.txt")
-
-    teacher_forcing = False 
+	
+    INCLUDE_POS = True
 
     ########## IMPORT DATA ##########
     embeddings = recall_mapping(EMBEDDING_FILE)
@@ -46,41 +45,23 @@ if __name__ == '__main__':
         mapping[word] = np.reshape(mapping[word], (1,) + mapping[word].shape)
 
     save_mapping(MAPPING_FILE, mapping)
-        
-    pos_pairs = pos_tag_alt(all_corpus_data, len(unique_words))
-
-    print("Pos length:", len(pos_pairs[0][1]))
-
-  #  print(len(mapping['ST'][0]))
-  #  print(len(pos_pairs[0][1]))
- #   print(mapping['ST'][0])
- #   print(pos_pairs[0][1])
-
-    # TODO: figure out how to concatenate part of speech with word embedding
+	
     data = []
     ground_truth = []
-    for i, word in enumerate(corpus_data):
-        #if word in mapping.keys():
- #       print(len(mapping[word][0]))
- #       print(len(pos_pairs[i][1]))
-        #print(pos_pairs[i])
-        #print(mapping[word])
-        #print(mapping[word][0])
-        #mapping[word] is an array of the array of one hot
-        #mapping[wprd][0] grabs just that array and that solves this problem
-        data.append(np.concatenate([mapping[word][0],pos_pairs[i][1]]))
-        ground_truth.append(mapping[word])
-    
-    '''
-    data = []
-    for word in corpus_data:
-        if word in embeddings.keys():
-            data.append(np.array(embeddings[word]))
-    '''
 
+    if INCLUDE_POS:
+        pos_pairs = pos_tag_alt(all_corpus_data, len(unique_words))
+        print("Pos length:", len(pos_pairs[0][1]))
+
+        for i, word in enumerate(corpus_data):
+            data.append(np.concatenate([mapping[word][0],pos_pairs[i][1]]))
+            ground_truth.append(mapping[word])
+    else:
+        for word in corpus_data:
+            data.append(mapping[word][0])
+            ground_truth.append(mapping[word])
 
     data = np.array(data)
-    #ground_truth = data.copy()
     ground_truth = np.array(ground_truth)
 
     num_words = 10
@@ -98,54 +79,14 @@ if __name__ == '__main__':
         new_data[i] = vec
 
     data = new_data.copy()
-    #ground_truth = new_data.copy()
-    #ground_truth = [x[0][:len(pos_pairs[0][1])] for x in ground_truth]
-    #ground_truth = np.array(ground_truth)
 
     noise = np.random.rand(data.shape[0],data.shape[1],  data.shape[2])
     noise /= 10 # small amount of noise
     print(noise.shape)
 
-    '''
-    data = []
-    for word in corpus_data:
-        if word in embeddings.keys():
-            data.append(np.array(embeddings[word]))
-            # TODO: pos_tag corpus_data, append to eatch data element
-
-
-    # TODO: split data into separate sentences?
-    data = np.array(data)
-    ground_truth = data.copy()
-
-    num_words = 10
-    new_data = np.zeros(shape=(data.shape[0], num_words, data.shape[2]))
-
-    #print(data.shape)
-    #print(new_data.shape)
-
-    for i in range(len(data)):
-        vec = np.zeros(shape=(num_words, data.shape[2]))
-        for j in range(num_words):
-            if (i+j+1) < len(data):
-                vec[j] = data[i+j+1]
-            else:
-                k = 0
-                vec[j] = data[k+j]
-        #print(vec)
-        new_data[i] = vec
-
-    ground_truth = new_data.copy()
-    '''
-
-
-    if teacher_forcing:
-        pre_ground_truth = ground_truth [:,0:ground_truth.shape[1]-1,:]
-        post_ground_truth = ground_truth [:,1:ground_truth.shape[1],:]
-    else:
-        post_ground_truth = np.append(ground_truth [:,1:,:], 
-                ground_truth[:,0:1,:],
-                axis=1)
+    post_ground_truth = np.append(ground_truth [:,1:,:], 
+                    ground_truth[:,0:1,:],
+                    axis=1)
     print(data.shape)
     print(post_ground_truth.shape)
     print(noise.shape)
@@ -156,22 +97,13 @@ if __name__ == '__main__':
 
     learning_rate = 1e-4
 
-
-    if teacher_forcing:
-        model, encoder_model, decoder_model = encoder_decoder(embedding_size=128,
-                                                              recurrent_dropout=0,
-                                                              single_timestep_elements=data[0].shape[-1],
-                                                              single_timestep_gt=post_ground_truth[0].shape[-1],
-                                                              learning_rate=learning_rate,
-                                                              loss='categorical_crossentropy')
-    else:
-        print(data[0].shape[-1])
-        model = rnn(embedding_size=128,
-                  recurrent_dropout=0.2,
-                  single_timestep_elements=data[0].shape[-1],
-                  single_timestep_gt=post_ground_truth[0].shape[-1],
-                  learning_rate=learning_rate,
-                  loss='categorical_crossentropy')
+    print(data[0].shape[-1])
+    model = rnn(embedding_size=128,
+                      recurrent_dropout=0.2,
+                      single_timestep_elements=data[0].shape[-1],
+                      single_timestep_gt=post_ground_truth[0].shape[-1],
+                      learning_rate=learning_rate,
+                      loss='categorical_crossentropy')
 
     print(model.summary())
 
@@ -189,36 +121,26 @@ if __name__ == '__main__':
 
     NUM_EPOCHS = 10000
     try:
-        if teacher_forcing:
-            BATCH_SIZE = 2**8
-            model.fit([data[0:1], pre_ground_truth[0:1]], post_ground_truth[0:1],
-                      batch_size=BATCH_SIZE,
-                      epochs=NUM_EPOCHS,
-                      verbose=0,
-                      callbacks=callbacks)
-            encoder_model.save(ENCODER_MODEL)
-            decoder_model.save(DECODER_MODEL)
-        else:
-            BATCH_SIZE = 2**10
-            history = model.fit([data, noise], post_ground_truth,
-                      batch_size=BATCH_SIZE,
-                      epochs=NUM_EPOCHS,
-                      verbose=0,
-                      callbacks=callbacks)
-            model.save(RNN_MODEL)
-            plt.figure(1)
-            plt.subplot(211)
-            plt.plot(history.history['acc'])
-            plt.title('model accuracy with part of speech')
-            plt.ylabel('accuracy')
-            plt.xlabel('epoch')
-            plt.subplot(212)
-            plt.plot(history.history['loss'])
-            plt.title('model loss with part of speech')
-            plt.ylabel('loss')
-            plt.xlabel('epoch')
-            plt.tight_layout()
-            plt.savefig('curves_with_pos.png')
+        BATCH_SIZE = 2**10
+        history = model.fit([data, noise], post_ground_truth,
+                          batch_size=BATCH_SIZE,
+                          epochs=NUM_EPOCHS,
+                          verbose=0,
+                          callbacks=callbacks)
+        model.save(RNN_MODEL)
+        plt.figure(1)
+        plt.subplot(211)
+        plt.plot(history.history['acc'])
+        plt.title('model accuracy with part of speech')
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.subplot(212)
+        plt.plot(history.history['loss'])
+        plt.title('model loss with part of speech')
+        plt.ylabel('loss')
+        plt.xlabel('epoch')
+        plt.tight_layout()
+        plt.savefig('curves_with_pos.png')
 
         K.clear_session()
 

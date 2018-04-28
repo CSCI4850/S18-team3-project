@@ -52,18 +52,7 @@ if __name__ == '__main__':
 
     ########## LOAD MODEL ##########
 
-    if teacher_forcing:
-
-        #loss = 'categorical_crossentropy'
-        loss = 'cosine'
-        encoder_model = load_model(ENCODER_MODEL)
-        encoder_model.compile(optimizer='Adam', loss=loss)
-
-        decoder_model = load_model(DECODER_MODEL)
-        decoder_model.compile(optimizer='Adam', loss=loss)
-
-    else:
-        model = load_model(RNN_MODEL)
+    model = load_model(RNN_MODEL)
 
     print("**** Models Loaded ****")
 
@@ -72,102 +61,66 @@ if __name__ == '__main__':
 
     # set up start token
     token = mapping['ST']
-    #token = embeddings['ST']
     token = np.array(token)
     token = np.reshape(token, (1,) + token.shape)
 
-    #print(token.shape)
+    if INCLUDE_POS:
+        final_shape = 291
+    else:
+        final_shape = 244
 
-    tmp = np.zeros(shape=(1,1,291))
+    tmp = np.zeros(shape=(1,1,final_shape))
     tmp[0,0,:len(token[0,0])] = token[0,0,:]
     token = tmp
-    #padding = 291 - token.shape[-1]
-    #token[0,0,:] = np.pad(token[0,0,:], (0, padding), 'constant')
     noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
     noise /= 10 #small amount of noise
 
     print(token.shape)
     print(noise.shape)
 
-    #print("Start token min: {:.4f}".format(np.min(token[0,:,0])))
-    #print("Start token med: {:.4f}".format(np.median(token[0,:,0])))
-    #print("Start token max: {:.4f}".format(np.max(token[0,:,0])))
-
     en_count = 0
-    if teacher_forcing:
-        context = encoder_model.predict(token)
-        words = []
-        words.append('ST')
 
-        # generate words
-        while en_count <= 50:
-            out, h, c = decoder_model.predict([token]+context)
-            context = [h, c]
+    words = []
+    words.append('ST')
 
-            # snap the network's prediction to the closest real word, and also
-            # snap the network's prediction to the closest vector in our space
-            # so that it predicts with real words as previous values
-            closest_word, closest_vec = closest(mapping, out[0,0,:])
-            #closest_word, closest_vec = closest(embeddings, out[0,0,:])
+    # generate words
+    while en_count <= 50:
+        out = model.predict([token, noise])
 
-            token = np.zeros(shape=out.shape)
-            token[0,0,:] = closest_vec
+        # snap the network's prediction to the closest real word, and also
+        # snap the network's prediction to the closest vector in our space
+        # so that it predicts with real words as previous values
+        closest_word, closest_vec = closest(mapping, out[0,0,:])
+        token = np.zeros(shape=out.shape)
+        token[0,0,:] = closest_vec
 
-            #print("Prediction min: {:.4f}".format(np.min(token)))
-            #print("Start token med: {:.4f}".format(np.median(token)))
-            #print("Prediction max: {:.4f}".format(np.max(token)))
+        # fix shapes
+        tmp = np.zeros(shape=(1,1,final_shape))
+        tmp[0,0,:len(out[0,0])] = out[0,0,:]
+        out = tmp
 
-            words.append(closest_word)
-            if closest_word == "EN":
-                en_count += 1
+        tmp = np.zeros(shape=(1,1,final_shape))
+        tmp[0,0,:len(token[0,0])] = token[0,0,:]
+        token = tmp
 
-            # update context with new token
-            context = encoder_model.predict(token)
+        noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
 
-    else:
-        words = []
-        words.append('ST')
+        words.append(closest_word)
 
-        # generate words
-        while en_count <= 50:
-            out = model.predict([token, noise])
-
-            # snap the network's prediction to the closest real word, and also
-            # snap the network's prediction to the closest vector in our space
-            # so that it predicts with real words as previous values
-            closest_word, closest_vec = closest(mapping, out[0,0,:])
-            #closest_word, closest_vec = closest(embeddings, out[0,0,:])
-            token = np.zeros(shape=out.shape)
-            token[0,0,:] = closest_vec
-            #token = np.pad(token, (0, padding), 'constant')
-
-
-            # fix shapes
-            tmp = np.zeros(shape=(1,1,291))
-            tmp[0,0,:len(out[0,0])] = out[0,0,:]
-            out = tmp
-
-            tmp = np.zeros(shape=(1,1,291))
-            tmp[0,0,:len(token[0,0])] = token[0,0,:]
-            token = tmp
-
-            noise = np.random.rand(token.shape[0], token.shape[1], token.shape[2])
-
-            words.append(closest_word)
-
-            if closest_word == "EN":
-                en_count += 1
+        if closest_word == "EN":
+            en_count += 1
 
     # write the output to a file
-    with open("pos_output.txt", 'w', encoding='utf8') as f:
+    if INCLUDE_POS:
+        filename = "pos_output.txt"
+    else:
+        filename = "no_pos_output.txt"
+    with open(filename, 'w', encoding='utf8') as f:
         for word in words:
             f.write(word)
             if word == "EN":
                 f.write('\n')
             else:
                 f.write(" ")
-    # print to console
-    #for word in words:
-    #    print(word)
 
     K.clear_session()

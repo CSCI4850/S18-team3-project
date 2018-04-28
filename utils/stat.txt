@@ -1,4 +1,0 @@
-Total number of words in corpus: 649
-Total number of unique words: 220
-Outlier count: 21
-
