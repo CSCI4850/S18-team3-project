@@ -40,7 +40,8 @@ if __name__ == '__main__':
     MAPPING_FILE = os.path.join("utils", "mapping.pkl")
     RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
 
-    INCLUDE_POS = True
+    INCLUDE_POS = True 
+    NUM_POS_TAGS = 47
 
     ########## IMPORT DATA ##########
     with open(MAPPING_FILE, 'rb') as f:
@@ -62,9 +63,9 @@ if __name__ == '__main__':
     token = np.reshape(token, (1,) + token.shape)
 
     if INCLUDE_POS:
-        final_shape = 291
+        final_shape = token.shape[-1] + NUM_POS_TAGS 
     else:
-        final_shape = 244
+        final_shape = token.shape[-1]
 
     tmp = np.zeros(shape=(1,1,final_shape))
     tmp[0,0,:len(token[0,0])] = token[0,0,:]
@@ -119,5 +120,7 @@ if __name__ == '__main__':
                 f.write('\n')
             else:
                 f.write(" ")
+
+    print("**** Generating Sentences Complete ****")
 
     K.clear_session()

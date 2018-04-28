@@ -10,7 +10,7 @@ from keras_tqdm import TQDMCallback
 import pickle
 from tqdm import tqdm
 from keras import backend as K
-from models.rnn import encoder_decoder, rnn
+from models.rnn import rnn
 from utils.pos_tagging import pos_tag_alt
 from keras.utils import to_categorical
 import matplotlib.pyplot as plt
@@ -23,16 +23,16 @@ if __name__ == '__main__':
     RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
     corpus = os.path.join(DATA_DIR, "simple.txt")
 	
-    INCLUDE_POS = True
+    INCLUDE_POS = True 
 
     ########## IMPORT DATA ##########
-    embeddings = recall_mapping(EMBEDDING_FILE)
-    print("**** Data Loaded ****")
-
-    ########## PROCESS DATA ##########
     with open(corpus, 'r', encoding='utf8') as f:
         all_corpus_data = f.read()
         corpus_data = all_corpus_data.split()
+
+    print("**** Data Loaded ****")
+
+    ########## PROCESS DATA ##########
     
     # create mapping
     mapping = {}
@@ -81,22 +81,16 @@ if __name__ == '__main__':
 
     noise = np.random.rand(data.shape[0],data.shape[1],  data.shape[2])
     noise /= 10 # small amount of noise
-    print(noise.shape)
 
     post_ground_truth = np.append(ground_truth [:,1:,:], 
                     ground_truth[:,0:1,:],
                     axis=1)
-    print(data.shape)
-    print(post_ground_truth.shape)
-    print(noise.shape)
 
 
     ########## LOAD MODEL ##########
 
-
     learning_rate = 1e-4
 
-    print(data[0].shape[-1])
     model = rnn(embedding_size=128,
                       recurrent_dropout=0.2,
                       single_timestep_elements=data[0].shape[-1],
@@ -117,7 +111,6 @@ if __name__ == '__main__':
 
     ########## TRAIN ##########
 
-
     NUM_EPOCHS = 10000
     try:
         BATCH_SIZE = 2**10
@@ -127,26 +120,37 @@ if __name__ == '__main__':
                           verbose=0,
                           callbacks=callbacks)
         model.save(RNN_MODEL)
+
+        print("\nModel saved successfully")
+
+        ########## VISUALIZE TRAINING CURVES ##########
+
+        if INCLUDE_POS:
+            plot_filename = "training_curves_pos.png"
+            plot_title = "Model Accuracy with Part of Speech"
+            plot_title_2 = "Model Loss with Part of Speech"
+        else:
+            plot_filename = "training_curves_no_pos.png"
+            plot_title = "Model Accuracy without Part of Speech"
+            plot_title_2 = "Model Loss without Part of Speech"
+
         plt.figure(1)
         plt.subplot(211)
         plt.plot(history.history['acc'])
-        plt.title('model accuracy with part of speech')
+        plt.title(plot_title)
         plt.ylabel('accuracy')
         plt.xlabel('epoch')
         plt.subplot(212)
         plt.plot(history.history['loss'])
-        plt.title('model loss with part of speech')
+        plt.title(plot_title_2)
         plt.ylabel('loss')
         plt.xlabel('epoch')
         plt.tight_layout()
-        plt.savefig('curves_with_pos.png')
+        plt.savefig(plot_filename)
 
         K.clear_session()
 
     except KeyboardInterrupt:
-        if teacher_forcing:
-            encoder_model.save(ENCODER_MODEL)
-            decoder_model.save(DECODER_MODEL)
-        else:
-            model.save(RNN_MODEL)
+        model.save(RNN_MODEL)
+        print("\nModel saved successfully")
         K.clear_session()
