@@ -43,7 +43,7 @@ if __name__ == '__main__':
     DECODER_MODEL = os.path.join("models", "decoder_model.hdf5")
     RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
 
-    teacher_forcing = False 
+    INCLUDE_POS = True
 
     ########## IMPORT DATA ##########
     embeddings = recall_mapping(EMBEDDING_FILE)
