@@ -1,7 +1,7 @@
 from keras.models import Model
 from keras.layers import Input, LSTM, Dense, Activation, concatenate, Flatten,\
         Embedding, Lambda, Dropout, Reshape, LeakyReLU, add
-from keras.optimizers import Adam
+from keras.optimizers import Adam, RMSprop
 import keras.backend as K
 from keras import losses 
 from tensorflow import float16
@@ -23,7 +23,7 @@ def rnn(embedding_size, single_timestep_elements, single_timestep_gt, recurrent_
 
     model = Model([inputs, noise], x)
     model.compile(loss=loss,
-                optimizer=Adam(lr=learning_rate),
+                optimizer=RMSprop(lr=learning_rate),
                 metrics = ['accuracy'])
 
     return model
