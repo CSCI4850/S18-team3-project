@@ -47,13 +47,13 @@ A dialog window will pop-up after the function call which allows you to select a
 ## Downloading cartoon script data  
 Our project uses the American cartoon show, Rick and Morty, to create our training corpus. The script can be aquired by running ```python utils/preprocess.py``` from the root directory, which will download and format the data, placing it in `/data/train/cleaned/simple.txt`
 
-### Training and Testing 
+## Training and Testing 
 
-##Train
+### Train
 `train.py` is where the model is located, and this is where you can tweak any hyperparameters you'd like. Once you have the model you desire, run ```python train.py```, which will train the model on any data that is located in `data/train/cleaned/simple.txt`.
 This script also produces an image of the training curves, called `training_curves_pos.png` or `training_curves_no_pos.png`, depending on if part of speech was included as input or not.
 
-##Test
+### Test
 After the network is trained, you can run ```python test.py```, which will load the model and generate 50 sentences. Similar to above, the output will be stored in `pos_output.txt` or `no_pos_output.txt`, depending on if part of speech was included as input or not.
 
-###Comparisons/Metrics
+### Comparisons/Metrics
