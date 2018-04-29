@@ -45,7 +45,4 @@ The NLTK library requires you download corpora data for our part of speech taggi
 A dialog window will pop-up after the function call which allows you to select and install data.  The perceptron tagger might be the only nltk data required, but in our development we used all nltk data.
 
 ### Downloading cartoon script data  
-Our project uses three cartoon shows to create a corpus: The Simpsons, Rick & Morty, and South Park.  These TV show scripts can be acquired using a python script which will download and format the scripts.  Run `preprocess.py` and the resulting data will appear in `/data/train/cleaned`
-
-**Disclaimer:** South Park contains explicit language and script data is uncensored.  It's potentially offensive to just about anyone.  
-
+Our project uses the American cartoon show, Rick and Morty, to create our training corpus. The script can be aquired by running 'utils/preprocess.py' FROM THE ROOT DIRECTORY, which will download and format the data, placing it in '/data/train/cleaned/simple.txt'
