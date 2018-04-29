@@ -4,20 +4,28 @@ from nltk import pos_tag
 from nltk.data import load
 from nltk.tokenize import word_tokenize, sent_tokenize
 from pos_tagging import pos_tagging
-
+import argparse
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="File names for comparing")
+    parser.add_argument('--file1', type=argparse.FileType('r', encoding='UTF-8'), required = True, action = 'store', dest = 'firstFile', help ="Name of first file")
+    parser.add_argument('--file2', type=argparse.FileType('r', encoding='UTF-8'), required = True, action = 'store', dest = 'secondFile', help ="Name of second file")
+
+    #reading lines from the two files passed in as arguments
+    args = parser.parse_args()
+    firstFile = args.firstFile
+    secondFile = args.secondFile
     sentOne = []
     sentTwo = []
     contentOne = []
     contentTwo = []
-    with open("markovSentences.txt", "r") as f:
-        contentOne = f.readlines()
+    contentOne = firstFile.readlines()
     contentOne = [x.strip() for x in contentOne]
-    with open("../data/train/cleaned/cleanRM.txt", "r") as f:
-        contentTwo = f.readlines()
+    contentTwo = secondFile.readlines()
     contentTwo = [x.strip() for x in contentTwo]
 
+    firstFile.close()
+    secondFile.close()
     
     totalHamming = 0
     totalCosine = 0
