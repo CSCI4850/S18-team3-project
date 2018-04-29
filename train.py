@@ -91,8 +91,8 @@ if __name__ == '__main__':
 
     learning_rate = 1e-4
 
-    model = rnn(embedding_size=128,
-                      recurrent_dropout=0.2,
+    model = rnn(embedding_size=256,
+                      recurrent_dropout=0,
                       single_timestep_elements=data[0].shape[-1],
                       single_timestep_gt=post_ground_truth[0].shape[-1],
                       learning_rate=learning_rate,
