@@ -27,6 +27,8 @@ if __name__ == "__main__":
     firstFile.close()
     secondFile.close()
     
+    numSentences = len(contentOne)
+    
     totalHamming = 0
     totalCosine = 0
     totalGotoh = 0
@@ -68,8 +70,8 @@ if __name__ == "__main__":
         count += 1
 
 f = open("metricStats.txt", "w")
-f.write("Average Hamming:  " + str(totalHamming/ 1000) + '\n')
-f.write("Average Cosine:  " + str(totalCosine/1000) + '\n')
-f.write("Average Gotoh:  " + str(totalGotoh/1000) + '\n')
-f.write("Average Levenshtein:  " + str(totalLev/1000) + '\n')
+f.write("Average Hamming:  " + str(totalHamming/numSentences) + '\n')
+f.write("Average Cosine:  " + str(totalCosine/numSentences) + '\n')
+f.write("Average Gotoh:  " + str(totalGotoh/numSentences) + '\n')
+f.write("Average Levenshtein:  " + str(totalLev/numSentences) + '\n')
 
