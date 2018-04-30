@@ -66,8 +66,11 @@ Our project uses the American cartoon show, Rick and Morty, to create our traini
 
 ### Train
 `train.py` is where the model is located, and this is where you can tweak any hyperparameters you'd like.  Then run
+
 ```python train.py --include_grammar y``` or
+
 ```python train.py --include_grammar n```,
+
 which will train the model on any data that is located in `data/train/cleaned/simple.txt`.
 
 Depending on the provided argument, training will occur with or without each word's corresponding part of speech, and
@@ -75,8 +78,11 @@ also produces an image of the training curves, called `training_curves_pos.png` 
 
 ### Generate Text 
 After the network is trained, you can run 
+
 ```python test.py --include_grammar y``` or
+
 ```python test.py --include_grammar n```,
+
 which will load the model and generate 50 sentences.
 Similar to above, the output will be stored in `pos_output.txt` or `no_pos_output.txt`, depending on the provided arguments.
 </details>
