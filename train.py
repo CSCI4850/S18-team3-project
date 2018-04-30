@@ -14,16 +14,31 @@ from models.rnn import rnn
 from utils.pos_tagging import pos_tag_alt
 from keras.utils import to_categorical
 import matplotlib.pyplot as plt
+import argparse
 
 if __name__ == '__main__':
+
+    ########## PARSE ARGUMENTS ##########
+    parser = argparse.ArgumentParser(description="Arguments for training.")
+    parser.add_argument('--include_grammar', required=True, action='store', dest='INCLUDE_POS',
+            default="Y", help='Y to include the parts of speech in training,\
+                    N to exclude parts of speech in training.')
+    parser = parser.parse_args()
 
     ########## SET DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train", "cleaned")
     MAPPING_FILE = os.path.join("utils", "mapping.pkl")
-    RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
     corpus = os.path.join(DATA_DIR, "simple.txt")
 	
-    INCLUDE_POS = True 
+    if parser.INCLUDE_POS.lower() == 'y':
+        INCLUDE_POS = True 
+        RNN_MODEL = os.path.join("models", "rnn_model_pos.hdf5")
+    elif parser.INCLUDE_POS.lower() == 'n':
+        INCLUDE_POS = False
+        RNN_MODEL = os.path.join("models", "rnn_model_no_pos.hdf5")
+    else:
+        print("Invalid argument for \"--include_grammar\"")
+        sys.exit()
 
     ########## IMPORT DATA ##########
     with open(corpus, 'r', encoding='utf8') as f:

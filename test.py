@@ -10,6 +10,7 @@ from tqdm import tqdm
 from keras.models import load_model
 from keras.models import model_from_json 
 from keras import backend as K
+import argparse
 import pickle
 
 def dist(x,y):
@@ -35,12 +36,27 @@ def closest(dictionary, vec):
 
 if __name__ == '__main__':
 
+    ########## PARSE ARGUMENTS ##########
+    parser = argparse.ArgumentParser(description="Arguments for training.")
+    parser.add_argument('--include_grammar', required=True, action='store', dest='INCLUDE_POS',
+            default="Y", help='Y to include the parts of speech in training,\
+                    N to exclude parts of speech in training.')
+    parser = parser.parse_args()
+
     ########## SET DIRECTORIES ##########
     DATA_DIR = os.path.join("data", "train", "cleaned")
     MAPPING_FILE = os.path.join("utils", "mapping.pkl")
-    RNN_MODEL = os.path.join("models", "rnn_model.hdf5")
 
-    INCLUDE_POS = True 
+    if parser.INCLUDE_POS.lower() == 'y':
+        INCLUDE_POS = True 
+        RNN_MODEL = os.path.join("models", "rnn_model_pos.hdf5")
+    elif parser.INCLUDE_POS.lower() == 'n':
+        INCLUDE_POS = False
+        RNN_MODEL = os.path.join("models", "rnn_model_no_pos.hdf5")
+    else:
+        print("Invalid argument for \"--include_grammar\"")
+        sys.exit()
+		
     NUM_POS_TAGS = 47
 
     ########## IMPORT DATA ##########

@@ -1,4 +1,3 @@
 data/
 .ipynb_checkpoints/
-utils/seq_likelihood/target
-utils/embedPlusPos.h5
+__pycache__/
