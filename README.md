@@ -3,6 +3,7 @@
 <details>
 <summary>Installing Dependencies</summary>
 <br>
+
 ### Installing Dependences
 Install the python package manager PIP  
 
@@ -38,6 +39,7 @@ Installing python packages can be done by using the `requirements.txt`:
 <details>
 <summary>Data Preprocessing</summary>
 <br>
+
 ## Data preprocessing and preparation
 
 ### NLTK parts of speech data  
@@ -59,6 +61,7 @@ Our project uses the American cartoon show, Rick and Morty, to create our traini
 <details>
 <summary>Training and Generating</summary>
 <br>
+
 ## Training and Testing 
 
 ### Train
