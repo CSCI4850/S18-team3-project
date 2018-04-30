@@ -1,5 +1,7 @@
 # Team Pandemonium
 
+<details open>
+<summary>##Installing Dependencies</summary>
 ## Installing dependences:  
 ### Install the python package manager PIP  
 
@@ -30,6 +32,7 @@ To verify which environment you're in, use ```which pip```.  if you see that the
 ### Install packages
 Installing python packages can be done by using the `requirements.txt`:  
 ```pip install -r requirements.txt```
+<details>
 
 ## Data preprocessing and preparation
 
