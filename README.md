@@ -14,6 +14,8 @@ If you have all the dependences, run the following scripts in order from the roo
 
 This will download and preprocess the data, train an RNN with parts of speech included, and generate 50 sentences based on the trained model.
 
+## Detailed Walkthrough
+
 <details>
 <summary>Installing Dependencies</summary>
 <br>
