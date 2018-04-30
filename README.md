@@ -2,8 +2,9 @@
 
 <details>
 <summary>Installing Dependencies</summary>
-## Installing dependences:  
-### Install the python package manager PIP  
+<br>
+### Installing Dependences
+Install the python package manager PIP  
 
 ```python<3> get-pip.py``` or ```sudo easy_install pip```  
 
@@ -36,6 +37,7 @@ Installing python packages can be done by using the `requirements.txt`:
 
 <details>
 <summary>Data Preprocessing</summary>
+<br>
 ## Data preprocessing and preparation
 
 ### NLTK parts of speech data  
@@ -56,6 +58,7 @@ Our project uses the American cartoon show, Rick and Morty, to create our traini
 
 <details>
 <summary>Training and Generating</summary>
+<br>
 ## Training and Testing 
 
 ### Train
@@ -68,6 +71,7 @@ After the network is trained, you can run ```python test.py```, which will load 
 
 <details>
 <summary>Comparison Metrics</summary>
+<br>
 
 ## Comparisons/Metrics
 
