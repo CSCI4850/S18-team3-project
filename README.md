@@ -7,7 +7,7 @@ Our demo file - generate_text_demo.ipynb - gives a quick and simple example of o
 
 2. Open generate_text_demo.ipynb
 
-As mentioned above, running this code will give you an idea of the text that can be generated with our model, both with and without part of speech appended to the input. While the sentences generated from the network with part of speech appended, the sentences still are not great. Below is a detailed walkthrough to help you manipulate the network and possibly get better results! Investigate deeper, larger networks, tweak the hyperparameters of the model, and consider other embedding techniques.
+As mentioned above, running this code will give you an idea of the text that can be generated with our model, both with and without part of speech appended to the input. While the sentences generated from the network with part of speech appended are visibly better, the sentences still are not great. Below is a detailed walkthrough to help you manipulate the network and possibly get better results! Investigate deeper, larger networks, tweak the hyperparameters of the model, and consider other embedding techniques.
 
 
 ## Quick Start Guide 
