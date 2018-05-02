@@ -3,8 +3,9 @@
 ## Demo
 
 Our demo file - generate_text_demo.ipynb - gives a quick and simple example of our results. 
-1.) Install Jupyter: http://jupyter.readthedocs.io/en/latest/install.html
-2.) Open generate_text_demo.ipynb
+1. Install Jupyter: http://jupyter.readthedocs.io/en/latest/install.html
+
+2. Open generate_text_demo.ipynb
 
 
 ## Quick Start Guide 
