@@ -131,9 +131,9 @@ if __name__ == '__main__':
 
     # write the output to a file
     if INCLUDE_POS:
-        filename = "pos_output.txt"
+        filename = os.path.join("results", "pos_output.txt")
     else:
-        filename = "no_pos_output.txt"
+        filename = os.path.join("results", "no_pos_output.txt")
     with open(filename, 'w', encoding='utf8') as f:
         for word in words:
             f.write(word)

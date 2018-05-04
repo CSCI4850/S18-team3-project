@@ -141,11 +141,11 @@ if __name__ == '__main__':
         ########## VISUALIZE TRAINING CURVES ##########
 
         if INCLUDE_POS:
-            plot_filename = "training_curves_pos.png"
+            plot_filename = os.path.join("results", "training_curves_pos.png")
             plot_title = "Model Accuracy with Part of Speech"
             plot_title_2 = "Model Loss with Part of Speech"
         else:
-            plot_filename = "training_curves_no_pos.png"
+            plot_filename = os.path.join("results", "training_curves_no_pos.png")
             plot_title = "Model Accuracy without Part of Speech"
             plot_title_2 = "Model Loss without Part of Speech"
 
