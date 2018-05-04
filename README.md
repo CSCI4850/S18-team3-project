@@ -2,12 +2,12 @@
 
 ## Demo
 
-Our demo file - generate_text_demo.ipynb - gives a quick and simple example of our results. This code very clearly shows that including the part of speech tag as input to the network, along with the word itself, gives qualitatively better results than just feeding in the word as input. Running each code block in the iPyton notebook will allow you to try both ways with the exact same model. 
+Our demo file - `generate_text_demo.ipynb` - gives a quick and simple example of our results. This code very clearly shows that including the part of speech tag as input to the network, along with the word itself, gives qualitatively better results than just feeding in the word as input. Running each code block in the iPython notebook will allow you to try both ways with the exact same model. 
 1. Install Jupyter: http://jupyter.readthedocs.io/en/latest/install.html
 
-2. Open generate_text_demo.ipynb
+2. Open `generate_text_demo.ipynb`
 
-As mentioned above, running this code will give you an idea of the text that can be generated with our model, both with and without part of speech appended to the input. While the sentences generated from the network with part of speech appended are visibly better, the sentences still are not great. Below is a detailed walkthrough to help you manipulate the network and possibly get better results! Investigate deeper, larger networks, tweak the hyperparameters of the model, and consider other embedding techniques.
+As mentioned above, running this code will give you an idea of the text that can be generated with our model, both without and with parts of speech appended to the input. While the sentences generated from the network with parts of speech appended are visibly better, the sentences still are not great. Below is a detailed walkthrough to help you manipulate the network and possibly get better results! Investigate deeper, larger networks, tweak the hyperparameters of the model, and consider other embedding techniques.
 
 
 ## Quick Start Guide 
