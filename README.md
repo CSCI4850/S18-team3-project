@@ -12,7 +12,7 @@ As mentioned above, running this code will give you an idea of the text that can
 
 ## Quick Start Guide 
 
-If you have all the dependences, run the following scripts in order from the root directory:
+If you have all the dependences (outlined below), run the following scripts in order from the root directory:
 
 1. ```python utils/preprocess.py```
 
@@ -32,14 +32,14 @@ This will download and preprocess the data, train an RNN with parts of speech in
 ### Installing Dependences
 Install the python package manager PIP  
 
-```python<3> get-pip.py``` or ```sudo easy_install pip```  
-
 __NOTE:__ Make sure to use python 3.
+
+```python get-pip.py``` or ```sudo easy_install pip```  
 
 ### Install virutalenv
 install virtualenv using pip:  
 
-```pip<3> install virtualenv```
+```pip install virtualenv```
 
 virtualenv is used to create and manage environments for different python projects.  Use virtualenv to create a virtual environment by using:
 
